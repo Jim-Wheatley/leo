@@ -1,10 +1,14 @@
 # Godot 4+ specific ignores
 .godot/
+.nomedia
 
 # Godot-specific
 *.translation
 *.import
 *.md5
+.import/
+export.cfg
+export_credentials.cfg
 
 # Mono-specific ignores
 .mono/
