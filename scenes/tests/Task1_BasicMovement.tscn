@@ -1,0 +1,77 @@
+[gd_scene load_steps=5 format=3 uid="uid://b2t67dmvsmhp1"]
+
+[ext_resource type="Script" path="res://scripts/player/PlayerController.gd" id="1_player"]
+[ext_resource type="Texture2D" uid="uid://bxqvxr8ixqy8y" path="res://icon.svg" id="2_icon"]
+[ext_resource type="Script" path="res://scripts/SimpleCameraFollow.gd" id="3_camera"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(32, 48)
+
+[node name="Task1_BasicMovement" type="Node2D"]
+
+[node name="Player" type="CharacterBody2D" parent="."]
+z_index = 10
+script = ExtResource("1_player")
+
+[node name="Sprite2D" type="Sprite2D" parent="Player"]
+modulate = Color(0.2, 0.6, 1, 1)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_icon")
+
+[node name="PlayerRect" type="ColorRect" parent="Player"]
+offset_left = -16.0
+offset_top = -24.0
+offset_right = 16.0
+offset_bottom = 24.0
+color = Color(0.2, 0.6, 1, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="InteractionArea" type="Area2D" parent="Player"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player/InteractionArea"]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+script = ExtResource("3_camera")
+
+[node name="Floor" type="ColorRect" parent="."]
+z_index = -10
+offset_left = -500.0
+offset_top = -300.0
+offset_right = 500.0
+offset_bottom = 300.0
+color = Color(0.8, 0.7, 0.6, 1)
+
+[node name="TestWall1" type="StaticBody2D" parent="."]
+position = Vector2(150, 0)
+
+[node name="WallRect" type="ColorRect" parent="TestWall1"]
+offset_left = -20.0
+offset_top = -60.0
+offset_right = 20.0
+offset_bottom = 60.0
+color = Color(0.4, 0.3, 0.2, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TestWall1"]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="TestWall2" type="StaticBody2D" parent="."]
+position = Vector2(-150, 0)
+
+[node name="WallRect" type="ColorRect" parent="TestWall2"]
+offset_left = -20.0
+offset_top = -60.0
+offset_right = 20.0
+offset_bottom = 60.0
+color = Color(0.4, 0.3, 0.2, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TestWall2"]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="Label" type="Label" parent="."]
+offset_right = 400.0
+offset_bottom = 100.0
+text = "TASK 1 TEST: Basic Movement & Collision
+WASD to move, test collision with brown walls"

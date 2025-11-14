@@ -1,0 +1,23 @@
+[gd_scene load_steps=2 format=3 uid="uid://cqwkwdgwprvdk"]
+
+[ext_resource type="PackedScene" uid="uid://bqwkwdgwprvdk" path="res://scenes/environments/Workshop.tscn" id="1_workshop"]
+
+[node name="Task4_WorkshopTest" type="Node2D"]
+
+[node name="Workshop" parent="." instance=ExtResource("1_workshop")]
+
+[node name="TestUI" type="CanvasLayer" parent="."]
+
+[node name="TestLabel" type="Label" parent="TestUI"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = -100.0
+offset_right = 400.0
+offset_bottom = -10.0
+text = "TASK 4 TEST: Workshop Environment
+WASD/Arrow Keys: Move
+E/Space: Interact
+Walk near Master Artist or Workstations to interact"
+autowrap_mode = 2

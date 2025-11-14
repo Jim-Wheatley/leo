@@ -1,0 +1,236 @@
+[gd_scene load_steps=8 format=3 uid="uid://fmajsdvn5byl"]
+
+[ext_resource type="Script" path="res://scripts/environments/Florence.gd" id="1_florence_script"]
+[ext_resource type="Script" path="res://scripts/player/PlayerController.gd" id="2_player_script"]
+[ext_resource type="Script" path="res://scripts/ui/UIManager.gd" id="7_ui_manager_script"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(32, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_Cathedral"]
+size = Vector2(220, 220)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_Market"]
+size = Vector2(260, 180)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_Street"]
+size = Vector2(160, 80)
+
+[node name="Florence" type="Node2D"]
+script = ExtResource("1_florence_script")
+
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 2048.0
+offset_bottom = 1536.0
+color = Color(0.85, 0.8, 0.7, 1)
+
+[node name="Streets" type="Node2D" parent="."]
+
+[node name="MainStreet" type="ColorRect" parent="Streets"]
+offset_left = 200.0
+offset_top = 600.0
+offset_right = 1800.0
+offset_bottom = 700.0
+color = Color(0.6, 0.55, 0.45, 1)
+
+[node name="CrossStreet1" type="ColorRect" parent="Streets"]
+offset_left = 600.0
+offset_top = 200.0
+offset_right = 700.0
+offset_bottom = 1200.0
+color = Color(0.6, 0.55, 0.45, 1)
+
+[node name="CrossStreet2" type="ColorRect" parent="Streets"]
+offset_left = 1200.0
+offset_top = 300.0
+offset_right = 1300.0
+offset_bottom = 1000.0
+color = Color(0.6, 0.55, 0.45, 1)
+
+[node name="Buildings" type="Node2D" parent="."]
+
+[node name="WorkshopBuilding" type="StaticBody2D" parent="Buildings"]
+position = Vector2(400, 400)
+
+[node name="WorkshopSprite" type="ColorRect" parent="Buildings/WorkshopBuilding"]
+offset_left = -80.0
+offset_top = -60.0
+offset_right = 80.0
+offset_bottom = 60.0
+color = Color(0.8, 0.6, 0.4, 1)
+
+[node name="WorkshopCollision" type="CollisionShape2D" parent="Buildings/WorkshopBuilding"]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="WorkshopLabel" type="Label" parent="Buildings/WorkshopBuilding"]
+offset_left = -40.0
+offset_top = -80.0
+offset_right = 40.0
+offset_bottom = -60.0
+text = "Workshop"
+horizontal_alignment = 1
+
+[node name="Cathedral" type="StaticBody2D" parent="Buildings"]
+position = Vector2(1000, 500)
+
+[node name="CathedralSprite" type="ColorRect" parent="Buildings/Cathedral"]
+offset_left = -100.0
+offset_top = -120.0
+offset_right = 100.0
+offset_bottom = 80.0
+color = Color(0.7, 0.65, 0.6, 1)
+
+[node name="CathedralLabel" type="Label" parent="Buildings/Cathedral"]
+offset_left = -50.0
+offset_top = -140.0
+offset_right = 50.0
+offset_bottom = -120.0
+text = "Cathedral"
+horizontal_alignment = 1
+
+[node name="MarketSquare" type="StaticBody2D" parent="Buildings"]
+position = Vector2(1400, 400)
+
+[node name="MarketSprite" type="ColorRect" parent="Buildings/MarketSquare"]
+offset_left = -120.0
+offset_top = -80.0
+offset_right = 120.0
+offset_bottom = 80.0
+color = Color(0.9, 0.85, 0.7, 1)
+
+[node name="MarketLabel" type="Label" parent="Buildings/MarketSquare"]
+offset_left = -60.0
+offset_top = -100.0
+offset_right = 60.0
+offset_bottom = -80.0
+text = "Market Square"
+horizontal_alignment = 1
+
+[node name="Player" type="CharacterBody2D" parent="."]
+position = Vector2(400, 500)
+script = ExtResource("2_player_script")
+
+[node name="Sprite2D" type="ColorRect" parent="Player"]
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+color = Color(0.2, 0.4, 0.8, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+
+[node name="InteractionArea" type="Area2D" parent="Player"]
+
+[node name="InteractionShape" type="CollisionShape2D" parent="Player/InteractionArea"]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="SketchableSubjects" type="Node2D" parent="."]
+
+[node name="CathedralSketch" type="Area2D" parent="SketchableSubjects"]
+position = Vector2(1000, 500)
+
+[node name="CathedralSketchSprite" type="ColorRect" parent="SketchableSubjects/CathedralSketch"]
+offset_left = -110.0
+offset_top = -130.0
+offset_right = 110.0
+offset_bottom = 90.0
+color = Color(0.8, 0.75, 0.7, 0.3)
+
+[node name="CathedralSketchCollision" type="CollisionShape2D" parent="SketchableSubjects/CathedralSketch"]
+shape = SubResource("RectangleShape2D_Cathedral")
+
+[node name="MarketSketch" type="Area2D" parent="SketchableSubjects"]
+position = Vector2(1400, 400)
+
+[node name="MarketSketchSprite" type="ColorRect" parent="SketchableSubjects/MarketSketch"]
+offset_left = -130.0
+offset_top = -90.0
+offset_right = 130.0
+offset_bottom = 90.0
+color = Color(0.9, 0.9, 0.8, 0.3)
+
+[node name="MarketSketchCollision" type="CollisionShape2D" parent="SketchableSubjects/MarketSketch"]
+shape = SubResource("RectangleShape2D_Market")
+
+[node name="StreetScene" type="Area2D" parent="SketchableSubjects"]
+position = Vector2(800, 650)
+
+[node name="StreetSceneSprite" type="ColorRect" parent="SketchableSubjects/StreetScene"]
+offset_left = -80.0
+offset_top = -40.0
+offset_right = 80.0
+offset_bottom = 40.0
+color = Color(0.7, 0.6, 0.5, 0.3)
+
+[node name="StreetSceneCollision" type="CollisionShape2D" parent="SketchableSubjects/StreetScene"]
+shape = SubResource("RectangleShape2D_Street")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="UIManager" type="Node" parent="UI"]
+script = ExtResource("7_ui_manager_script")
+
+[node name="HUD" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="InteractionPrompt" type="Label" parent="UI/HUD"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -50.0
+offset_right = 100.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Press E to interact"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LocationLabel" type="Label" parent="UI/HUD"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -200.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = 40.0
+grow_horizontal = 0
+text = "Florence - City Center"
+horizontal_alignment = 2
+
+[node name="DebugInstructions" type="Label" parent="UI/HUD"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = -120.0
+offset_right = 400.0
+offset_bottom = -10.0
+grow_vertical = 0
+text = "Florence City - Renaissance Italy
+WASD/Arrow Keys: Move around
+E: Enter buildings/Interact/Sketch
+I: Open/Close Inventory
+P: Open/Close Portfolio
+
+Explore the city and discover landmarks!
+Sketch buildings and scenes to improve skills!"
+vertical_alignment = 1

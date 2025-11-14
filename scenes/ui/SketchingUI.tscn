@@ -1,0 +1,64 @@
+[gd_scene load_steps=2 format=3 uid="uid://bsketchingui123"]
+
+[ext_resource type="Script" path="res://scripts/ui/SketchingUI.gd" id="1_sketching_ui_script"]
+
+[node name="SketchingUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_sketching_ui_script")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.1, 0.1, 0.15, 0.9)
+mouse_filter = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -150.0
+offset_right = 200.0
+offset_bottom = 150.0
+
+[node name="TitleLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Sketching in Progress"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SubjectLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Subject: Cathedral (Building)"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StatusLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Observing subject..."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="VBoxContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 30)
+max_value = 100.0
+
+[node name="InstructionsLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Hold still and observe carefully.
+Press ESC to cancel sketching."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CancelButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Cancel Sketching"

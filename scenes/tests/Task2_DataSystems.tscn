@@ -1,0 +1,70 @@
+[gd_scene load_steps=2 format=3 uid="uid://dywj55xhchvnw"]
+
+[ext_resource type="Script" path="res://scripts/tests/Task2_DataTest.gd" id="1_test_script"]
+
+[node name="Task2_DataSystems" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_test_script")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -150.0
+offset_right = 200.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "TASK 2 TEST: Data Systems & Save/Load"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="AddItemBtn" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Add Test Item to Inventory"
+
+[node name="AddSkillBtn" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Increase Painting Skill"
+
+[node name="CreateArtworkBtn" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Create Test Artwork"
+
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="SaveBtn" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Save Game"
+
+[node name="LoadBtn" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Load Game"
+
+[node name="HSeparator3" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="StatusLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Status: Ready to test"
+horizontal_alignment = 1
+
+[node name="DataLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Data will appear here..."
+horizontal_alignment = 1

@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://benjnxbcfxh1a"]
+
+[ext_resource type="PackedScene" uid="uid://bvwkwdgwprvdk" path="res://scenes/ui/InventoryUI.tscn" id="1_inventory_ui"]
+[ext_resource type="Script" path="res://scripts/tests/DirectUITest.gd" id="2_direct_test_script"]
+
+[node name="DirectUITest" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_direct_test_script")
+
+[node name="InventoryUI" parent="." instance=ExtResource("1_inventory_ui")]
+layout_mode = 1
+grow_horizontal = 2
+grow_vertical = 2

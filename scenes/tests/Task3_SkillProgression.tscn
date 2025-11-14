@@ -1,0 +1,104 @@
+[gd_scene load_steps=2 format=3 uid="uid://bfwkwdgwprvdk"]
+
+[ext_resource type="Script" path="res://scripts/tests/Task3_SkillTest.gd" id="1_test_script"]
+
+[node name="Task3_SkillProgression" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_test_script")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LeftPanel" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Title" type="Label" parent="HBoxContainer/LeftPanel"]
+layout_mode = 2
+text = "TASK 3 TEST: Skill Progression System"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="HBoxContainer/LeftPanel"]
+layout_mode = 2
+
+[node name="ActivityButtons" type="VBoxContainer" parent="HBoxContainer/LeftPanel"]
+layout_mode = 2
+
+[node name="PaintingBtn" type="Button" parent="HBoxContainer/LeftPanel/ActivityButtons"]
+layout_mode = 2
+text = "Practice Painting (+15 exp)"
+
+[node name="SketchingBtn" type="Button" parent="HBoxContainer/LeftPanel/ActivityButtons"]
+layout_mode = 2
+text = "Do Sketching (+12 exp)"
+
+[node name="ColorTheoryBtn" type="Button" parent="HBoxContainer/LeftPanel/ActivityButtons"]
+layout_mode = 2
+text = "Study Color Theory (+10 exp)"
+
+[node name="CraftingBtn" type="Button" parent="HBoxContainer/LeftPanel/ActivityButtons"]
+layout_mode = 2
+text = "Craft Materials (+8 exp)"
+
+[node name="GatheringBtn" type="Button" parent="HBoxContainer/LeftPanel/ActivityButtons"]
+layout_mode = 2
+text = "Gather Pigments (+6 exp)"
+
+[node name="ObservationBtn" type="Button" parent="HBoxContainer/LeftPanel/ActivityButtons"]
+layout_mode = 2
+text = "Observe Nature (+5 exp)"
+
+[node name="HSeparator2" type="HSeparator" parent="HBoxContainer/LeftPanel"]
+layout_mode = 2
+
+[node name="UtilityButtons" type="VBoxContainer" parent="HBoxContainer/LeftPanel"]
+layout_mode = 2
+
+[node name="BigBoostBtn" type="Button" parent="HBoxContainer/LeftPanel/UtilityButtons"]
+layout_mode = 2
+text = "Big Skill Boost (+85 exp all)"
+
+[node name="ResetBtn" type="Button" parent="HBoxContainer/LeftPanel/UtilityButtons"]
+layout_mode = 2
+text = "Reset All Skills"
+
+[node name="RightPanel" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SkillsTitle" type="Label" parent="HBoxContainer/RightPanel"]
+layout_mode = 2
+text = "Skills & Progress"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/RightPanel"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/RightPanel/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TechniquesPanel" type="VBoxContainer" parent="HBoxContainer/RightPanel"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TechniquesTitle" type="Label" parent="HBoxContainer/RightPanel/TechniquesPanel"]
+layout_mode = 2
+text = "Unlocked Techniques"
+horizontal_alignment = 1
+
+[node name="TechniquesLabel" type="Label" parent="HBoxContainer/RightPanel/TechniquesPanel"]
+layout_mode = 2
+text = "No techniques unlocked yet."
+autowrap_mode = 2

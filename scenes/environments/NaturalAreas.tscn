@@ -1,0 +1,85 @@
+[gd_scene load_steps=5 format=3 uid="uid://bxqvn8y7qxqxq"]
+
+[ext_resource type="Script" path="res://scripts/environments/NaturalAreas.gd" id="1_0hdxr"]
+[ext_resource type="Script" path="res://scripts/systems/ClayDeposit.gd" id="2_1mjkl"]
+[ext_resource type="Script" path="res://scripts/systems/MineralVein.gd" id="3_2nklm"]
+[ext_resource type="Script" path="res://scripts/ui/UIManager.gd" id="4_ui_manager_script"]
+
+[node name="NaturalAreas" type="Node2D"]
+script = ExtResource("1_0hdxr")
+
+[node name="Background" type="ColorRect" parent="."]
+offset_right = 1024.0
+offset_bottom = 768.0
+color = Color(0.4, 0.6, 0.3, 1)
+
+[node name="GatheringNodes" type="Node2D" parent="."]
+
+[node name="ClayDeposit1" type="Area2D" parent="GatheringNodes"]
+position = Vector2(200, 300)
+script = ExtResource("2_1mjkl")
+
+[node name="ClayDeposit2" type="Area2D" parent="GatheringNodes"]
+position = Vector2(400, 500)
+script = ExtResource("2_1mjkl")
+
+[node name="ClayDeposit3" type="Area2D" parent="GatheringNodes"]
+position = Vector2(700, 200)
+script = ExtResource("2_1mjkl")
+
+[node name="MineralVein1" type="Area2D" parent="GatheringNodes"]
+position = Vector2(150, 600)
+script = ExtResource("3_2nklm")
+
+[node name="MineralVein2" type="Area2D" parent="GatheringNodes"]
+position = Vector2(800, 400)
+script = ExtResource("3_2nklm")
+
+[node name="PlayerSpawn" type="Marker2D" parent="."]
+position = Vector2(512, 100)
+
+[node name="ExitToFlorence" type="Area2D" parent="."]
+position = Vector2(50, 100)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ExitToFlorence"]
+
+[node name="Label" type="Label" parent="ExitToFlorence"]
+offset_left = -25.0
+offset_top = -10.0
+offset_right = 25.0
+offset_bottom = 10.0
+text = "To Florence"
+horizontal_alignment = 1
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="UIManager" type="Node" parent="UI"]
+script = ExtResource("4_ui_manager_script")
+
+[node name="HUD" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DebugInstructions" type="Label" parent="UI/HUD"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = -100.0
+offset_right = 400.0
+offset_bottom = -10.0
+grow_vertical = 0
+text = "Natural Areas - Material Gathering
+WASD/Arrow Keys: Move around
+E: Gather from clay deposits and mineral veins
+I: Open/Close Inventory
+P: Open/Close Portfolio
+
+Brown squares = Clay deposits (no skill needed)
+Gray squares = Mineral veins (need Gathering Skill 2)"
+vertical_alignment = 1

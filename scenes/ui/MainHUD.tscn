@@ -1,0 +1,183 @@
+[gd_scene load_steps=2 format=3 uid="uid://bvxcvxcvxcvxc"]
+
+[ext_resource type="Script" path="res://scripts/ui/MainHUD.gd" id="1"]
+
+[node name="MainHUD" type="CanvasLayer"]
+script = ExtResource("1")
+
+[node name="HUDContainer" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="TopBar" type="HBoxContainer" parent="HUDContainer"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 60.0
+alignment = 1
+
+[node name="SkillsPanel" type="Panel" parent="HUDContainer/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SkillsContainer" type="HBoxContainer" parent="HUDContainer/TopBar/SkillsPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 5.0
+offset_right = -10.0
+offset_bottom = -5.0
+
+[node name="PaintingSkill" type="VBoxContainer" parent="HUDContainer/TopBar/SkillsPanel/SkillsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="HUDContainer/TopBar/SkillsPanel/SkillsContainer/PaintingSkill"]
+layout_mode = 2
+text = "Painting"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="HUDContainer/TopBar/SkillsPanel/SkillsContainer/PaintingSkill"]
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+show_percentage = false
+
+[node name="SketchingSkill" type="VBoxContainer" parent="HUDContainer/TopBar/SkillsPanel/SkillsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="HUDContainer/TopBar/SkillsPanel/SkillsContainer/SketchingSkill"]
+layout_mode = 2
+text = "Sketching"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="HUDContainer/TopBar/SkillsPanel/SkillsContainer/SketchingSkill"]
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+show_percentage = false
+
+[node name="CraftingSkill" type="VBoxContainer" parent="HUDContainer/TopBar/SkillsPanel/SkillsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="HUDContainer/TopBar/SkillsPanel/SkillsContainer/CraftingSkill"]
+layout_mode = 2
+text = "Crafting"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="HUDContainer/TopBar/SkillsPanel/SkillsContainer/CraftingSkill"]
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+show_percentage = false
+
+[node name="GatheringSkill" type="VBoxContainer" parent="HUDContainer/TopBar/SkillsPanel/SkillsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="HUDContainer/TopBar/SkillsPanel/SkillsContainer/GatheringSkill"]
+layout_mode = 2
+text = "Gathering"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="HUDContainer/TopBar/SkillsPanel/SkillsContainer/GatheringSkill"]
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+show_percentage = false
+
+[node name="BottomBar" type="HBoxContainer" parent="HUDContainer"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -80.0
+alignment = 1
+
+[node name="QuickAccessPanel" type="Panel" parent="HUDContainer/BottomBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="QuickAccessContainer" type="HBoxContainer" parent="HUDContainer/BottomBar/QuickAccessPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+alignment = 1
+
+[node name="InventoryBtn" type="Button" parent="HUDContainer/BottomBar/QuickAccessPanel/QuickAccessContainer"]
+layout_mode = 2
+text = "Inventory (I)"
+
+[node name="PortfolioBtn" type="Button" parent="HUDContainer/BottomBar/QuickAccessPanel/QuickAccessContainer"]
+layout_mode = 2
+text = "Portfolio (P)"
+
+[node name="SkillsBtn" type="Button" parent="HUDContainer/BottomBar/QuickAccessPanel/QuickAccessContainer"]
+layout_mode = 2
+text = "Skills (K)"
+
+[node name="MenuBtn" type="Button" parent="HUDContainer/BottomBar/QuickAccessPanel/QuickAccessContainer"]
+layout_mode = 2
+text = "Menu (M)"
+
+[node name="RightSidePanel" type="VBoxContainer" parent="HUDContainer"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -100.0
+offset_bottom = 100.0
+
+[node name="CurrentTaskPanel" type="Panel" parent="HUDContainer/RightSidePanel"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TaskContainer" type="VBoxContainer" parent="HUDContainer/RightSidePanel/CurrentTaskPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+
+[node name="TaskTitle" type="Label" parent="HUDContainer/RightSidePanel/CurrentTaskPanel/TaskContainer"]
+layout_mode = 2
+text = "Current Task"
+horizontal_alignment = 1
+
+[node name="TaskDescription" type="Label" parent="HUDContainer/RightSidePanel/CurrentTaskPanel/TaskContainer"]
+layout_mode = 2
+text = "No active task"
+autowrap_mode = 3
+vertical_alignment = 1
+
+[node name="NotificationArea" type="VBoxContainer" parent="HUDContainer"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -300.0
+offset_top = 100.0
+offset_bottom = 200.0

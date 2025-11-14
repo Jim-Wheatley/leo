@@ -1,0 +1,35 @@
+[gd_scene load_steps=3 format=3 uid="uid://cu2leh4lk4brw"]
+
+[ext_resource type="PackedScene" uid="uid://bqwkwdgwprvdk" path="res://scenes/environments/Workshop.tscn" id="1_workshop"]
+[ext_resource type="Script" path="res://scripts/tests/Task6_InventoryPortfolioTest.gd" id="2_test_script"]
+
+[node name="Task6_InventoryPortfolioTest" type="Node2D"]
+script = ExtResource("2_test_script")
+
+[node name="Workshop" parent="." instance=ExtResource("1_workshop")]
+
+[node name="TestUI" type="CanvasLayer" parent="."]
+
+[node name="TestLabel" type="Label" parent="TestUI"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = -180.0
+offset_right = 600.0
+offset_bottom = -10.0
+text = "TASK 6 TEST: Inventory & Portfolio Management
+WASD/Arrow Keys: Move
+E/Space: Interact with stations
+I: Open/Close Inventory
+P: Open/Close Portfolio
+T: Add test materials
+R: Create test artwork
+
+Test the complete workflow:
+1. Press T to add materials
+2. Create paint and canvas at stations
+3. Create artwork at pink station
+4. Press I to view inventory
+5. Press P to view portfolio"
+autowrap_mode = 2

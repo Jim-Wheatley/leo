@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://cxqvn8y7qxqxs"]
+
+[ext_resource type="PackedScene" uid="uid://bxqvn8y7qxqxq" path="res://scenes/environments/NaturalAreas.tscn" id="1_0hdxt"]
+[ext_resource type="Script" path="res://scripts/tests/Task9_GatheringTest.gd" id="2_1mjkm"]
+
+[node name="Task9_GatheringTest" instance=ExtResource("1_0hdxt")]
+
+[node name="TestManager" type="Node" parent="." index="4"]
+script = ExtResource("2_1mjkm")
