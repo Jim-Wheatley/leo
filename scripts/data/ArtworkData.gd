@@ -1,4 +1,4 @@
-class_name ArtworkData extends RefCounted
+class_name ArtworkData extends Resource
 
 # Artwork data class for portfolio management
 
@@ -9,80 +9,104 @@ enum ArtworkType {
 	MASTERWORK
 }
 
-var artwork_id: String
-var title: String
-var artwork_type: ArtworkType
-var quality_score: float
-var creation_date: String
-var materials_used: Array = []
-var skill_level_at_creation: Dictionary = {}
-var thumbnail_texture: Texture2D
-var inspiration_source: String = ""
+@export var artwork_id: String = ""
+@export var title: String = ""
+@export var artwork_type: ArtworkType = ArtworkType.SKETCH
+@export var quality_score: float = 1.0
+@export var creation_date: String = ""
+@export var materials_used: Array = []
+@export var skill_level_at_creation: Dictionary = {}
+@export var inspiration_source: String = ""
+@export var thumbnail_path: String = ""
 
 func _init():
-	artwork_id = ""
-	title = ""
-	artwork_type = ArtworkType.SKETCH
-	quality_score = 1.0
-	creation_date = Time.get_datetime_string_from_system()
-	materials_used = []
-	skill_level_at_creation = {}
-	thumbnail_texture = null
-	inspiration_source = ""
+	# Ensure defaults when Resource is instantiated in editor or code
+	if artwork_id == "":
+		artwork_id = generate_id()
+	if creation_date == "":
+		var rng = RandomNumberGenerator.new()
+		rng.randomize()
+		creation_date = "artwork_date_" + str(rng.randi())
+
+func generate_id() -> String:
+	"""Generate a simple unique id for the artwork using system time."""
+	# Prefer Time API; fall back to OS if needed
+	var t = 0
+	# Use OS APIs for time — works in Godot 4.5
+	var rng = RandomNumberGenerator.new()
+	rng.randomize()
+	t = rng.randi()
+	return "artwork_" + str(t)
 
 func get_quality_description() -> String:
 	"""Get a text description of the artwork quality"""
 	if quality_score >= 9.0:
 		return "Masterpiece"
-	elif quality_score >= 7.5:
+	elif quality_score >= 8.0:
+		return "Masterful"
+	elif quality_score >= 7.0:
 		return "Excellent"
-	elif quality_score >= 6.0:
+	elif quality_score >= 5.5:
+		return "Very Good"
+	elif quality_score >= 4.0:
 		return "Good"
-	elif quality_score >= 4.5:
+	elif quality_score >= 2.5:
 		return "Fair"
-	elif quality_score >= 3.0:
+	elif quality_score >= 1.5:
 		return "Poor"
 	else:
 		return "Terrible"
 
-func calculate_quality_from_skills(skills: Dictionary, materials: Array):
+func calculate_quality_from_skills(skills: Dictionary, materials: Array) -> float:
 	"""Calculate artwork quality based on player skills and materials"""
-	var base_quality = 2.0
-	
-	# Skill-based quality calculation
-	match artwork_type:
-		ArtworkType.PAINTING:
-			var painting_skill = skills.get("painting", 1)
-			var color_theory_skill = skills.get("color_theory", 1)
-			var crafting_skill = skills.get("crafting", 1)
-			quality_score = base_quality + (painting_skill * 0.4) + (color_theory_skill * 0.3) + (crafting_skill * 0.2)
-		
+	# Use weighted skill approach from player variant for better control
+	var base_quality = 0.0
+	var skill_weights = get_skill_weights_for_type(artwork_type)
+	var total_weight = 0.0
+	for skill_name in skill_weights.keys():
+		if skills.has(skill_name):
+			var skill_level = skills[skill_name]
+			var weight = skill_weights[skill_name]
+			base_quality += skill_level * weight
+			total_weight += weight
+
+	if total_weight > 0:
+		base_quality /= total_weight
+
+	var material_bonus = calculate_material_bonus(materials)
+	var randomness = randf_range(-0.15, 0.15)
+	quality_score = clamp(base_quality + material_bonus + randomness, 0.1, 10.0)
+	return quality_score
+
+func get_skill_weights_for_type(type: ArtworkType) -> Dictionary:
+	match type:
 		ArtworkType.SKETCH:
-			var sketching_skill = skills.get("sketching", 1)
-			var observation_skill = skills.get("observation", 1)
-			quality_score = base_quality + (sketching_skill * 0.5) + (observation_skill * 0.4)
-		
+			return {"sketching": 0.6, "observation": 0.4}
+		ArtworkType.PAINTING:
+			return {"painting": 0.5, "color_theory": 0.3, "crafting": 0.2}
 		ArtworkType.STUDY:
-			var avg_skill = 0
-			var skill_count = 0
-			for skill_name in skills:
-				avg_skill += skills[skill_name]
-				skill_count += 1
-			if skill_count > 0:
-				avg_skill /= skill_count
-			quality_score = base_quality + (avg_skill * 0.3)
-		
+			return {"painting": 0.4, "sketching": 0.3, "observation": 0.3}
 		ArtworkType.MASTERWORK:
-			var total_skill = 0
-			for skill_name in skills:
-				total_skill += skills[skill_name]
-			quality_score = base_quality + (total_skill * 0.1)
-	
-	# Add some randomness
-	quality_score += randf_range(-0.5, 0.5)
-	
-	# Ensure quality is within bounds
-	quality_score = clamp(quality_score, 0.1, 10.0)
+			return {"painting": 0.4, "color_theory": 0.25, "crafting": 0.2, "sketching": 0.15}
+		_:
+			return {"painting": 0.5, "sketching": 0.3, "color_theory": 0.2}
+
+func calculate_material_bonus(materials: Array) -> float:
+	var bonus = 0.0
+	bonus += materials.size() * 0.05
+	for material in materials:
+		var s = str(material).to_lower()
+		if "large" in s:
+			bonus += 0.3
+		elif "medium" in s:
+			bonus += 0.15
+		elif "small" in s:
+			bonus += 0.05
+		if "paint" in s:
+			bonus += 0.1
+			if "purple" in s or "orange" in s:
+				bonus += 0.1
+	return bonus
 
 func to_dict() -> Dictionary:
 	"""Convert artwork to dictionary for saving"""
@@ -94,46 +118,45 @@ func to_dict() -> Dictionary:
 		"creation_date": creation_date,
 		"materials_used": materials_used,
 		"skill_level_at_creation": skill_level_at_creation,
-		"inspiration_source": inspiration_source
+		"inspiration_source": inspiration_source,
+		"thumbnail_path": thumbnail_path
 	}
 
 func from_dict(data: Dictionary):
-	"""Load artwork from dictionary"""
-	artwork_id = data.get("artwork_id", "")
-	title = data.get("title", "")
-	artwork_type = data.get("artwork_type", ArtworkType.SKETCH)
-	quality_score = data.get("quality_score", 1.0)
-	creation_date = data.get("creation_date", "")
-	materials_used = data.get("materials_used", [])
-	skill_level_at_creation = data.get("skill_level_at_creation", {})
-	inspiration_source = data.get("inspiration_source", "")
+	"""Load artwork from dictionary. Accept legacy keys for compatibility."""
+	# Accept both canonical and legacy keys
+	artwork_id = data.get("artwork_id", data.get("id", ""))
+	title = data.get("title", data.get("name", ""))
+	artwork_type = data.get("artwork_type", data.get("type", ArtworkType.SKETCH))
+	quality_score = data.get("quality_score", data.get("quality", 1.0))
+	creation_date = data.get("artwork_creation_date", data.get("creation_date", data.get("created_at", "")))
+	if creation_date == "":
+		var rng = RandomNumberGenerator.new()
+		rng.randomize()
+		creation_date = "artwork_date_" + str(rng.randi())
+	materials_used = data.get("materials_used", data.get("materials", []))
+	skill_level_at_creation = data.get("skill_level_at_creation", data.get("skills", {}))
+	inspiration_source = data.get("inspiration_source", data.get("inspiration", ""))
+	thumbnail_path = data.get("thumbnail_path", data.get("thumbnail", ""))
 
 # Static factory methods for common artwork types
 static func create_sketch(subject: String, skills: Dictionary) -> ArtworkData:
-	"""Create a sketch artwork"""
 	var sketch = ArtworkData.new()
 	sketch.artwork_id = "sketch_" + subject.to_lower().replace(" ", "_")
 	sketch.title = "Sketch of " + subject
 	sketch.artwork_type = ArtworkType.SKETCH
-	sketch.skill_level_at_creation = skills
-	sketch.materials_used = ["Charcoal", "Paper"]
+	sketch.skill_level_at_creation = skills.duplicate()
+	sketch.materials_used = ["charcoal", "paper"]
 	sketch.inspiration_source = subject
-	
-	# Calculate quality based on skills
 	sketch.calculate_quality_from_skills(skills, sketch.materials_used)
-	
 	return sketch
 
 static func create_painting(title: String, skills: Dictionary, materials: Array) -> ArtworkData:
-	"""Create a painting artwork"""
 	var painting = ArtworkData.new()
 	painting.artwork_id = "painting_" + title.to_lower().replace(" ", "_")
 	painting.title = title
 	painting.artwork_type = ArtworkType.PAINTING
-	painting.skill_level_at_creation = skills
-	painting.materials_used = materials
-	
-	# Calculate quality based on skills
+	painting.skill_level_at_creation = skills.duplicate()
+	painting.materials_used = materials.duplicate()
 	painting.calculate_quality_from_skills(skills, materials)
-	
 	return painting

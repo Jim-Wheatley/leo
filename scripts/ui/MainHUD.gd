@@ -226,7 +226,7 @@ func _on_task_completed(task_data):
 	update_current_task_display()
 	show_notification("Task completed: %s" % task_data.title, 4.0, "success")
 
-func _on_task_progress_updated(task_data):
+func _on_task_progress_updated(task_data, objective_id = ""):
 	"""Handle task progress update"""
 	update_current_task_display()
 

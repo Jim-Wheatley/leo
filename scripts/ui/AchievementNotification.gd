@@ -1,27 +1,18 @@
-extends Control
+extends CanvasLayer
 
 # Achievement Notification - Shows popup when achievements are unlocked
 
-@onready var panel = $Panel
-@onready var title_label = $Panel/VBoxContainer/TitleLabel
-@onready var description_label = $Panel/VBoxContainer/DescriptionLabel
-@onready var icon_rect = $Panel/VBoxContainer/IconRect
+@onready var panel = $NotificationPanel
+@onready var title_label = $NotificationPanel/VBoxContainer/TitleLabel
+@onready var description_label = $NotificationPanel/VBoxContainer/DescriptionLabel
+@onready var icon_rect = $NotificationPanel/VBoxContainer/IconRect
 
 var notification_queue: Array = []
 var is_showing: bool = false
 
 func _ready():
-	modulate.a = 0.0
-	
-	# Don't connect to signal - UIManager will call queue_notification directly
-	# This prevents duplicate notifications
-
-func _on_achievement_unlocked(achievement_id: String):
-	if not AchievementManager.achievements.has(achievement_id):
-		return
-	
-	var achievement = AchievementManager.achievements[achievement_id]
-	queue_notification(achievement["title"], achievement["description"])
+	panel.visible = false
+	panel.modulate.a = 1.0
 
 func queue_notification(title: String, description: String):
 	notification_queue.append({"title": title, "description": description})
@@ -32,6 +23,7 @@ func queue_notification(title: String, description: String):
 func _show_next_notification():
 	if notification_queue.is_empty():
 		is_showing = false
+		panel.visible = false
 		return
 	
 	is_showing = true
@@ -44,9 +36,12 @@ func _show_next_notification():
 	if AudioManager:
 		AudioManager.play_sfx("achievement_unlocked")
 	
-	# Animate in
+	# Show and animate in
+	panel.visible = true
+	panel.modulate.a = 0.0
+	
 	var tween = create_tween()
-	tween.tween_property(self, "modulate:a", 1.0, 0.3)
+	tween.tween_property(panel, "modulate:a", 1.0, 0.3)
 	tween.tween_interval(3.0)
-	tween.tween_property(self, "modulate:a", 0.0, 0.3)
+	tween.tween_property(panel, "modulate:a", 0.0, 0.3)
 	tween.tween_callback(_show_next_notification)

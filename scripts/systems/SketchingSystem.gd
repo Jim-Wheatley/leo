@@ -252,7 +252,9 @@ func create_sketch_artwork(quality: float) -> ArtworkData:
 	sketch.title = generate_sketch_title()
 	sketch.artwork_type = ArtworkData.ArtworkType.SKETCH
 	sketch.quality_score = quality
-	sketch.creation_date = Time.get_datetime_string_from_system()
+	var rng = RandomNumberGenerator.new()
+	rng.randomize()
+	sketch.creation_date = "artwork_date_" + str(rng.randi())
 	
 	# Store subject information
 	sketch.set_meta("subject_id", current_subject.get_meta("subject_id", current_subject.name))

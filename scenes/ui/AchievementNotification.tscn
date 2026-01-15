@@ -2,8 +2,12 @@
 
 [ext_resource type="Script" path="res://scripts/ui/AchievementNotification.gd" id="1"]
 
-[node name="AchievementNotification" type="Control"]
-layout_mode = 3
+[node name="AchievementNotification" type="CanvasLayer"]
+layer = 100
+script = ExtResource("1")
+
+[node name="NotificationPanel" type="PanelContainer" parent="."]
+visible = false
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -12,31 +16,21 @@ offset_top = 20.0
 offset_right = -20.0
 offset_bottom = 120.0
 grow_horizontal = 0
-mouse_filter = 2
-script = ExtResource("1")
 
-[node name="Panel" type="PanelContainer" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="NotificationPanel"]
 layout_mode = 2
 
-[node name="IconRect" type="ColorRect" parent="Panel/VBoxContainer"]
+[node name="IconRect" type="ColorRect" parent="NotificationPanel/VBoxContainer"]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 color = Color(0.8, 0.6, 0.2, 1)
 
-[node name="TitleLabel" type="Label" parent="Panel/VBoxContainer"]
+[node name="TitleLabel" type="Label" parent="NotificationPanel/VBoxContainer"]
 layout_mode = 2
 text = "Achievement Unlocked!"
 horizontal_alignment = 1
 
-[node name="DescriptionLabel" type="Label" parent="Panel/VBoxContainer"]
+[node name="DescriptionLabel" type="Label" parent="NotificationPanel/VBoxContainer"]
 layout_mode = 2
 text = "Achievement description"
 autowrap_mode = 3

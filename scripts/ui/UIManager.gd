@@ -14,7 +14,7 @@ var skill_tree_ui: SkillTreeUI
 var pause_menu: PauseMenu
 var crafting_station_ui: CraftingStationUI
 var tutorial_ui: Control
-var achievement_notification: Control
+var achievement_notification: Node
 var achievement_list_ui: Control
 
 var current_open_ui: Control = null
@@ -116,8 +116,13 @@ func setup_ui_scenes():
 	if ResourceLoader.exists("res://scenes/ui/AchievementNotification.tscn"):
 		var achievement_notif_scene = load("res://scenes/ui/AchievementNotification.tscn")
 		if achievement_notif_scene:
-			achievement_notification = achievement_notif_scene.instantiate()
-			ui_container.add_child(achievement_notification)
+			var notif_instance = achievement_notif_scene.instantiate()
+			if notif_instance is CanvasLayer:
+				achievement_notification = notif_instance
+				get_tree().root.add_child(achievement_notification)
+			else:
+				achievement_notification = notif_instance as Control
+				ui_container.add_child(achievement_notification)
 	
 	# Load achievement list UI (required for Task 13)
 	if ResourceLoader.exists("res://scenes/ui/AchievementListUI.tscn"):
@@ -414,8 +419,17 @@ func hide_tutorial():
 # Achievement Management
 func show_achievement_notification(title: String, description: String):
 	"""Show an achievement notification"""
-	if achievement_notification and achievement_notification.has_method("queue_notification"):
+	if not achievement_notification:
+		return
+
+	# Some notification scenes use CanvasLayer as root; check for method safely
+	if achievement_notification.has_method("queue_notification"):
 		achievement_notification.queue_notification(title, description)
+	else:
+		# Try to find a child that implements the API
+		var candidate = achievement_notification.get_node_or_null("NotificationPanel")
+		if candidate and candidate.has_method("queue_notification"):
+			candidate.queue_notification(title, description)
 
 func toggle_achievement_list():
 	"""Toggle the achievement list UI"""

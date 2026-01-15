@@ -69,7 +69,9 @@ func create_test_artwork(title: String, type: ArtworkData.ArtworkType, quality: 
 	artwork.title = title
 	artwork.artwork_type = type
 	artwork.quality_score = quality
-	artwork.creation_date = Time.get_datetime_string_from_system()
+	var rng = RandomNumberGenerator.new()
+	rng.randomize()
+	artwork.creation_date = "artwork_date_" + str(rng.randi())
 	artwork.materials_used = ["Paint", "Canvas"]
 	return artwork
 

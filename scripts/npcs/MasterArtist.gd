@@ -8,6 +8,7 @@ extends CharacterBody2D
 var dialogue_system: DialogueSystem
 var current_task_offer: TaskData = null
 var last_interaction_time: float = 0.0
+var last_interaction_frame: int = -9999
 
 func _ready():
 	# Create dialogue system
@@ -25,11 +26,13 @@ func _ready():
 func interact_with_player():
 	"""Main interaction method called when player interacts"""
 	# Prevent rapid interactions
-	var current_time = Time.get_time_dict_from_system()
-	var time_float = current_time.hour * 3600 + current_time.minute * 60 + current_time.second
-	if time_float - last_interaction_time < 1.0:
+	# Use a simple frame-based cooldown to avoid intermittent RNG/time issues
+	var current_frame = Engine.get_frames_drawn()
+	var cooldown_frames = 10  # ~10 frames cooldown (~0.16s at 60fps)
+	if current_frame - last_interaction_frame < cooldown_frames:
+		print("MasterArtist: interaction blocked by cooldown (frame %d, last %d)" % [current_frame, last_interaction_frame])
 		return
-	last_interaction_time = time_float
+	last_interaction_frame = current_frame
 	
 	# Check for completed tasks first
 	var completed_tasks = check_for_completed_tasks()
