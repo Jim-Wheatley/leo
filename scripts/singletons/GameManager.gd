@@ -67,7 +67,7 @@ func save_game():
 		"player_data": player_data.to_dict(),
 		"current_scene": current_scene.scene_file_path if current_scene else "",
 		"save_version": "1.0",
-		"save_timestamp": Time.get_datetime_string_from_system()
+		"save_timestamp": "save_" + str(RandomNumberGenerator.new().randi())
 	}
 	
 	var json_string = JSON.stringify(save_data)

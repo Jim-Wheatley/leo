@@ -11,7 +11,6 @@ signal close_requested()
 @onready var artwork_title_label: Label = $VBoxContainer/ArtworkInfoPanel/VBoxContainer/ArtworkTitleLabel
 @onready var artwork_details_label: Label = $VBoxContainer/ArtworkInfoPanel/VBoxContainer/ArtworkDetailsLabel
 @onready var artwork_description_label: Label = $VBoxContainer/ArtworkInfoPanel/VBoxContainer/ArtworkDescriptionLabel
-@onready var close_button: Button = $VBoxContainer/HeaderPanel/CloseButton
 @onready var filter_option: OptionButton = $VBoxContainer/HeaderPanel/FilterOption
 
 var selected_artwork: ArtworkData = null
@@ -25,11 +24,6 @@ func _ready():
 		header_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		await get_tree().process_frame
 		header_panel.custom_minimum_size.x = 900
-	
-	if close_button:
-		close_button.pressed.connect(_on_close_pressed)
-		close_button.mouse_entered.connect(_on_close_button_mouse_entered)
-		close_button.mouse_exited.connect(_on_close_button_mouse_exited)
 	
 	if filter_option:
 		filter_option.item_selected.connect(_on_filter_changed)
@@ -314,17 +308,3 @@ func _on_close_button_mouse_entered():
 func _on_close_button_mouse_exited():
 	"""Mouse exited close button"""
 	pass
-
-func _unhandled_input(event: InputEvent):
-	"""WORKAROUND: Manually detect clicks on close button
-	
-	TODO: Investigate why buttons don't receive normal input events and fix root cause.
-	"""
-	if not visible or not close_button:
-		return
-	
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
-		var button_rect = close_button.get_global_rect()
-		if button_rect.has_point(event.position):
-			_on_close_pressed()
-			get_viewport().set_input_as_handled()

@@ -15,6 +15,7 @@ var skill_tree_ui: Control = null
 var pause_menu: Control = null
 
 var current_interactable: Node = null
+var _interaction_exit_timer: Timer = null
 
 func _ready():
 	# Set up collision layers
@@ -89,7 +90,8 @@ func setup_interactions():
 		master_interaction_area.collision_layer = 0
 		master_interaction_area.collision_mask = 1
 		master_interaction_area.monitoring = true
-		master_interaction_area.monitorable = false
+		# Make the area monitorable so body_entered/exited are reliable
+		master_interaction_area.monitorable = true
 		master_interaction_area.set_collision_layer_value(1, false)
 		master_interaction_area.set_collision_mask_value(1, true)
 	else:
@@ -154,14 +156,30 @@ func setup_exit_door_interaction(exit_door: Node):
 func _on_master_interaction_entered(body: Node2D):
 	"""Called when player enters master artist interaction area"""
 	if body == player:
+		# Cancel any pending exit grace timer (player re-entered quickly)
+		if _interaction_exit_timer and _interaction_exit_timer.is_connected("timeout", Callable(self, "_on_interaction_exit_timeout")):
+			_interaction_exit_timer.disconnect("timeout", Callable(self, "_on_interaction_exit_timeout"))
+			_interaction_exit_timer = null
+
 		current_interactable = master_artist
 		show_interaction_prompt("Talk to Master Artist")
 
 func _on_master_interaction_exited(body: Node2D):
 	"""Called when player exits master artist interaction area"""
 	if body == player and current_interactable == master_artist:
-		current_interactable = null
-		hide_interaction_prompt()
+		# Start a short grace period before clearing the interactable so
+		# a slightly late button press still registers.
+		var grace_seconds = 0.25
+		# Use a one-shot Timer to delay clearing
+		_interaction_exit_timer = Timer.new()
+		_interaction_exit_timer.one_shot = true
+		_interaction_exit_timer.wait_time = grace_seconds
+		add_child(_interaction_exit_timer)
+		_interaction_exit_timer.start()
+		_interaction_exit_timer.timeout.connect(_on_interaction_exit_timeout)
+
+		# Keep the prompt visible during the grace period
+		# (it will be hidden in the timeout handler if still outside)
 
 func _on_exit_door_entered(body: Node2D):
 	"""Called when player enters exit door interaction area"""
@@ -211,6 +229,14 @@ func hide_interaction_prompt():
 
 func _input(event):
 	"""Handle input for interactions"""
+	# Debug: F9 triggers achievement reset + sample notifications
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F9:
+		if AchievementManager:
+			AchievementManager.debug_reset_and_trigger_samples()
+			print("Workshop: triggered AchievementManager.debug_reset_and_trigger_samples() via F9")
+		else:
+			print("Workshop: AchievementManager autoload not found")
+
 	if event.is_action_pressed("interact") and current_interactable:
 		handle_interaction()
 	
@@ -248,7 +274,11 @@ func handle_interaction():
 		AudioManager.play_ui_click()
 	
 	if current_interactable == master_artist:
-		interact_with_master()
+		# Double-check proximity to master (safeguard against race conditions)
+		if player and master_artist and player.global_position.distance_to(master_artist.global_position) <= 140:
+			interact_with_master()
+		else:
+			print("Workshop: interaction ignored — player too far from master")
 	elif current_interactable.has_meta("station_type"):
 		var station_type = current_interactable.get_meta("station_type")
 		interact_with_workstation(station_type)
@@ -335,6 +365,17 @@ func _process(_delta):
 	if interaction_prompt.visible and player:
 		var screen_pos = get_viewport().get_camera_2d().get_screen_center_position()
 		interaction_prompt.position = Vector2(screen_pos.x - 100, screen_pos.y - 100)
+
+func _on_interaction_exit_timeout():
+	"""Called after a short grace when the player leaves an interaction area."""
+	if current_interactable == master_artist:
+		current_interactable = null
+		hide_interaction_prompt()
+
+	# Clean up the timer node
+	if _interaction_exit_timer:
+		_interaction_exit_timer.queue_free()
+		_interaction_exit_timer = null
 
 func add_debug_materials():
 	"""Add test materials for debugging/testing (T key)"""

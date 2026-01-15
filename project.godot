@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Artist Apprentice RPG"
 run/main_scene="res://scenes/environments/Workshop.tscn"
-config/features=PackedStringArray("4.3", "Forward Plus")
+config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
@@ -24,6 +24,7 @@ AudioManager="*res://scripts/singletons/AudioManager.gd"
 VFXManager="*res://scripts/singletons/VFXManager.gd"
 TutorialManager="*res://scripts/singletons/TutorialManager.gd"
 AchievementManager="*res://scripts/singletons/AchievementManager.gd"
+AchievementNotificationUI="*res://scenes/ui/AchievementNotification.tscn"
 
 [input]
 

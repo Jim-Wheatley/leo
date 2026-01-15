@@ -272,48 +272,14 @@ func _show_achievement_notification(achievement_id: String):
 	
 	var achievement_data = achievements[achievement_id]
 	
-	# Try UIManager first (for scenes that use it)
-	var ui_manager = get_tree().root.get_node_or_null("UIManager")
-	if ui_manager and ui_manager.has_method("show_achievement_notification"):
-		ui_manager.show_achievement_notification(
-			achievement_data["title"],
-			achievement_data["description"]
-		)
-		return
-	
-	# Fallback: Find AchievementNotification directly in the scene tree
-	var notification_ui = _find_achievement_notification_ui()
-	if notification_ui and notification_ui.has_method("queue_notification"):
-		print("🏆 Calling notification UI directly")
-		notification_ui.queue_notification(
+	# Use the autoloaded notification UI
+	if AchievementNotificationUI and AchievementNotificationUI.has_method("queue_notification"):
+		AchievementNotificationUI.queue_notification(
 			achievement_data["title"],
 			achievement_data["description"]
 		)
 	else:
-		print("❌ Could not find AchievementNotification UI")
-
-func _find_achievement_notification_ui() -> Node:
-	"""Find the AchievementNotification UI in the scene tree"""
-	# Search in all CanvasLayers
-	for node in get_tree().root.get_children():
-		var result = _search_for_notification_ui(node)
-		if result:
-			return result
-	return null
-
-func _search_for_notification_ui(node: Node) -> Node:
-	"""Recursively search for AchievementNotification UI"""
-	if node.get_script():
-		var script_path = node.get_script().resource_path
-		if "AchievementNotification" in script_path:
-			return node
-	
-	for child in node.get_children():
-		var result = _search_for_notification_ui(child)
-		if result:
-			return result
-	
-	return null
+		push_warning("AchievementNotificationUI not found or doesn't have queue_notification method")
 
 # Event handlers
 func _on_skill_increased(skill_name: String, new_level: int):
@@ -369,3 +335,44 @@ func _load_achievement_data():
 				if item is String:
 					unlocked_achievements.append(item)
 			achievement_progress = data.get("progress", {})
+
+
+### Debug / Test helpers
+func debug_reset_achievements():
+	"""Clear unlocked achievements and progress (for testing)."""
+	unlocked_achievements.clear()
+	achievement_progress.clear()
+	_save_achievement_data()
+	print("AchievementManager: achievements reset for testing")
+
+func debug_trigger_achievement(achievement_id: String):
+	"""Force-unlock an achievement for testing UI/notifications."""
+	if not achievements.has(achievement_id):
+		push_warning("Attempt to trigger unknown achievement: %s" % achievement_id)
+		return
+	if achievement_id in unlocked_achievements:
+		print("AchievementManager: achievement '%s' already unlocked" % achievement_id)
+		return
+	unlock_achievement(achievement_id)
+	print("AchievementManager: debug triggered achievement '%s'" % achievement_id)
+
+func debug_reset_and_trigger_samples():
+	"""Reset achievements and trigger a few sample notifications for testing."""
+	debug_reset_achievements()
+
+	# Small delays so the UI can queue notifications sequentially
+	await get_tree().create_timer(0.2).timeout
+	if achievements.has("first_artwork"):
+		debug_trigger_achievement("first_artwork")
+	await get_tree().create_timer(0.3).timeout
+	if achievements.has("first_paint"):
+		debug_trigger_achievement("first_paint")
+	await get_tree().create_timer(0.3).timeout
+	if achievements.has("quality_work"):
+		debug_trigger_achievement("quality_work")
+	await get_tree().create_timer(0.3).timeout
+	# Optional hidden reward (may not be visible until unlocked)
+	if achievements.has("masterpiece"):
+		debug_trigger_achievement("masterpiece")
+
+	print("AchievementManager: sample sequence complete")
