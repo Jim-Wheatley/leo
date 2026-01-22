@@ -38,3 +38,6 @@ exports/
 
 # Logs
 *.log
+
+# Local Godot output captures
+godot_output.txt

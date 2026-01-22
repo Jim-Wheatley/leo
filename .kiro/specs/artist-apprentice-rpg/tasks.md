@@ -98,3 +98,10 @@
   - Test skill progression balance and crafting recipe difficulty
   - Validate complete gameplay loops from apprentice tasks to skill mastery
   - _Requirements: All requirements validation_
+
+- [ ] 15. Master Artist agentic AI (LM Studio local LLM)
+  - Document and implement a local-LLM-backed Master Artist agent that can generate new tasks and offer contextual artistic advice
+  - Use LM Studio's local OpenAI-compatible server (`http://localhost:1234`) for development
+  - Constrain outputs to strict JSON that maps into `TaskData` and validate before assigning
+  - Provide graceful fallback when the local LLM is unavailable
+  - _Requirements: 1.2, 1.4, 5.3_
