@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://task15_agent_test"]
+
+[ext_resource type="Script" path="res://scripts/tests/Task15_MasterArtistAgentTest.gd" id="1_task15test"]
+
+[node name="Task15_MasterArtistAgentTest" type="Node"]
+script = ExtResource("1_task15test")

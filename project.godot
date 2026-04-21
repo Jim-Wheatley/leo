@@ -25,6 +25,7 @@ VFXManager="*res://scripts/singletons/VFXManager.gd"
 TutorialManager="*res://scripts/singletons/TutorialManager.gd"
 AchievementManager="*res://scripts/singletons/AchievementManager.gd"
 AchievementNotificationUI="*res://scenes/ui/AchievementNotification.tscn"
+MasterArtistAgent="*res://scripts/systems/MasterArtistAgent.gd"
 
 [input]
 
