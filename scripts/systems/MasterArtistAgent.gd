@@ -429,10 +429,11 @@ func _json_to_task_data(json_result: Dictionary) -> TaskData:
 	# Each objective is a Dictionary: {id, description, target, type}
 	task.objectives = json_result.get("objectives", [])
 
-	# --- Fill required items ---
-	# Dictionary: {item_id: quantity}  e.g. {"pigment_red": 2}
-	if json_result.get("required_items") is Dictionary:
-		task.required_items = json_result["required_items"]
+	# --- Required items: kept in raw_json metadata for display only.
+	# We intentionally do NOT assign to task.required_items because that field
+	# is used by is_available() as an inventory gate — the player would be blocked
+	# from starting the task if they lack materials. AI tasks are always startable;
+	# the materials listed are advisory ("you'll need these"), not a prerequisite.
 
 	# --- Fill skill rewards ---
 	# Dictionary: {skill_name: xp_amount}  e.g. {"painting": 50}
