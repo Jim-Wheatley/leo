@@ -73,11 +73,13 @@ Integrate a local-LLM-driven Master Artist NPC that can generate and assign new 
     - Connection refused (result code 2) is detected instantly (0.0s) — no 60-second timeout
     - Fallback guidance fires correctly and shows skill-based dialogue to the player
 
-- [ ] 8. Add a lightweight test harness
-  - Extend an existing test scene or add a new one:
-    - Press a key to “Ask Master for new task”
-    - Print task + objectives + dialogue
-  - Validate that completing objectives triggers normal progress updates
+- [x] 8. Add a lightweight test harness
+  - Created `Task15_MasterArtistAgentTest.gd` and `Task15_MasterArtistAgentTest.tscn` ✓
+  - SPACE: generates an AI task and prints full title/description/objectives/dialogue ✓
+  - R: registers task with TaskManager and starts it ✓
+  - C/V/A/S/G keys simulate craft-paint, craft-canvas, create-artwork, sketch, gather ✓
+  - P: prints live progress bars for all active tasks ✓
+  - Connects to `task_progress_updated` and `task_completed` signals ✓
 
 ## Definition of Done
 
