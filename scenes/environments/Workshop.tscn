@@ -1,17 +1,18 @@
 [gd_scene load_steps=9 format=3 uid="uid://bqwkwdgwprvdk"]
 
-[ext_resource type="Script" path="res://scripts/environments/Workshop.gd" id="1_workshop_script"]
-[ext_resource type="Script" path="res://scripts/player/PlayerController.gd" id="2_player_script"]
-[ext_resource type="Script" path="res://scripts/npcs/MasterArtist.gd" id="3_master_script"]
-[ext_resource type="Script" path="res://scripts/crafting/PaintCreationStation.gd" id="4_paint_station_script"]
-[ext_resource type="Script" path="res://scripts/crafting/CanvasMakingStation.gd" id="5_canvas_station_script"]
-[ext_resource type="Script" path="res://scripts/crafting/ArtworkCreationStation.gd" id="6_artwork_station_script"]
+[ext_resource type="Script" uid="uid://csvyo2eenffyg" path="res://scripts/environments/Workshop.gd" id="1_workshop_script"]
+[ext_resource type="Script" uid="uid://dsb4a1nbl3f5d" path="res://scripts/player/PlayerController.gd" id="2_player_script"]
+[ext_resource type="Script" uid="uid://coxfotp2xpiij" path="res://scripts/npcs/MasterArtist.gd" id="3_master_script"]
+[ext_resource type="Script" uid="uid://nda6dgnhs3rn" path="res://scripts/crafting/PaintCreationStation.gd" id="4_paint_station_script"]
+[ext_resource type="Script" uid="uid://n7bnuhcxmke8" path="res://scripts/crafting/CanvasMakingStation.gd" id="5_canvas_station_script"]
+[ext_resource type="Script" uid="uid://c4l6w36xoh0an" path="res://scripts/crafting/ArtworkCreationStation.gd" id="6_artwork_station_script"]
 [ext_resource type="PackedScene" uid="uid://bvxcvxcvxcvxc" path="res://scenes/ui/MainHUD.tscn" id="7_main_hud"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(32, 32)
 
 [node name="Workshop" type="Node2D"]
+position = Vector2(-1, 0)
 script = ExtResource("1_workshop_script")
 
 [node name="Background" type="ColorRect" parent="."]
