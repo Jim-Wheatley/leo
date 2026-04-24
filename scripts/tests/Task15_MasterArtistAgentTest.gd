@@ -130,10 +130,29 @@ func _register_and_start_task():
 	var started = TaskManager.start_task(task_id)
 	if started:
 		print("✅ Task '%s' is now IN PROGRESS." % task_id)
-		print("   Now simulate objectives with C / V / A / S / G keys.\n")
+		_print_key_cheatsheet(_last_generated_task)
 	else:
 		print("⚠️  Task registered but could not be started (status: %d)." % _last_generated_task.status)
 		print("   It may already be started or require prerequisites.\n")
+
+func _print_key_cheatsheet(task: TaskData):
+	# Map each objective type to its simulation key so the player knows what to press
+	var key_map = {
+		"craft_item":      {"paint": "C  (craft paint)", "canvas": "V  (craft canvas)", "": "C or V (craft item)"},
+		"create_artwork":  {"": "A  (create artwork)"},
+		"create_sketch":   {"": "S  (complete sketch)"},
+		"gather_resource": {"": "G  (gather resource)"},
+	}
+	print("\n🎮 Keys to press for this task:")
+	for obj in task.objectives:
+		var obj_type     = obj.get("type", "?")
+		var item_type    = obj.get("item_type", "")
+		var target       = obj.get("target", 1)
+		var description  = obj.get("description", "?")
+		var type_keys    = key_map.get(obj_type, {})
+		var key_hint     = type_keys.get(item_type, type_keys.get("", "? (unknown type: %s)" % obj_type))
+		print("  → Press %s  ×%d   \"%s\"" % [key_hint, target, description])
+	print("")
 
 # ── STEP 3: Simulate objective completions ───────────────────────────────
 
