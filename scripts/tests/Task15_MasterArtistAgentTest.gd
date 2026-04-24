@@ -171,7 +171,9 @@ func _print_active_progress():
 	for task in active:
 		print("Task: %s  [%s]" % [task.title, task.task_id])
 		for obj in task.objectives:
-			var current = obj.get("current_progress", 0)
+			var obj_id  = obj.get("id", "")
+			# current_progress is on the TaskData object, keyed by objective id
+			var current = task.current_progress.get(obj_id, 0)
 			var target  = obj.get("target", 1)
 			var bar     = _progress_bar(current, target)
 			print("  • %s" % obj.get("description", "?"))
@@ -191,7 +193,8 @@ func _on_task_assigned(task: TaskData):
 func _on_task_progress_updated(task: TaskData, objective_id: String):
 	var obj = _find_objective(task, objective_id)
 	if obj:
-		var current = obj.get("current_progress", 0)
+		# current_progress is on the TaskData object, not inside the objective dict
+		var current = task.current_progress.get(objective_id, 0)
 		var target  = obj.get("target", 1)
 		print("📈 Progress: [%s] '%s' — %d / %d" % [
 			objective_id,
