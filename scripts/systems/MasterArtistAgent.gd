@@ -9,7 +9,7 @@ var llm_client: LLMClient
 
 # Set to false to skip the LLM entirely and use fallback dialogue.
 # Useful when LM Studio is not running or you want to test without AI.
-var ai_enabled: bool = true
+var ai_enabled: bool = false
 
 # Set to true to see detailed step-by-step logs in the Godot Output panel.
 var debug_mode: bool = true
