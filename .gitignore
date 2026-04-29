@@ -41,3 +41,9 @@ exports/
 
 # Local Godot output captures
 godot_output.txt
+
+# Claude Code workspace
+.claude/
+
+# Kiro IDE workspace
+.kiro/
