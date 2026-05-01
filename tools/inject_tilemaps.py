@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 """
-Inject TileMap nodes into Godot 4 environment scenes.
+Inject TileMapLayer nodes into Godot 4 environment scenes.
 
 Steps performed:
   1. Write TileSet .tres resource files for each environment
   2. Update Workshop.tscn, Florence.tscn, NaturalAreas.tscn:
        - add ext_resource reference to the TileSet
-       - insert a TileMap node (format=2) as the first child
+       - insert a TileMapLayer node as the first child
        - hide the existing Background / WorkshopFloor ColorRect nodes
+
+Uses TileMapLayer (Godot 4.2+) rather than the deprecated TileMap type.
 
 Run from the project root:
     python3 tools/inject_tilemaps.py
@@ -15,6 +17,7 @@ Run from the project root:
 
 import os
 import re
+import struct
 
 T = 24  # tile size in pixels
 
@@ -23,33 +26,38 @@ SCENE_DIR  = os.path.join(PROJECT_ROOT, 'scenes', 'environments')
 TILESET_DIR = os.path.join(PROJECT_ROOT, 'assets', 'sprites', 'tilesets')
 
 
-# ── Tile-data encoding ────────────────────────────────────────────────────────
+# ── Tile-data encoding (TileMapLayer / PackedByteArray) ──────────────────────
+# Each cell = 12 bytes, little-endian:
+#   uint16 map_x | uint16 map_y | uint32 source_id | uint16 atlas_x | uint16 atlas_y
 
-def encode_cell(mx, my, ax, ay, source=0):
-    """Return the 3-int Godot 4 TileMap cell encoding."""
-    coords = (mx & 0xFFFF) | ((my & 0xFFFF) << 16)
-    atlas  = (ax & 0xFFFF) | ((ay & 0xFFFF) << 16)
-    return (coords, source, atlas)
+def encode_cell_bytes(mx, my, ax, ay, source=0):
+    """Return 12 bytes encoding one TileMapLayer cell."""
+    return struct.pack('<HHIHH',
+                      mx & 0xFFFF,
+                      my & 0xFFFF,
+                      source,
+                      ax & 0xFFFF,
+                      ay & 0xFFFF)
 
 
 def build_tile_data(layout_fn, cols, rows):
     """
     Call layout_fn(col, row) → (atlas_x, atlas_y) or None for empty.
-    Returns a flat list of int32 values ready for PackedInt32Array.
+    Returns a bytearray ready for PackedByteArray.
     """
-    data = []
+    buf = bytearray()
     for y in range(rows):
         for x in range(cols):
             result = layout_fn(x, y)
             if result is not None:
                 ax, ay = result
-                data.extend(encode_cell(x, y, ax, ay))
-    return data
+                buf += encode_cell_bytes(x, y, ax, ay)
+    return buf
 
 
 def pack(data):
-    """Format a list of ints as a Godot PackedInt32Array literal."""
-    return 'PackedInt32Array(' + ', '.join(str(v) for v in data) + ')'
+    """Format a bytearray as a Godot PackedByteArray literal."""
+    return 'PackedByteArray(' + ', '.join(str(b) for b in data) + ')'
 
 
 # ── Map layout functions ──────────────────────────────────────────────────────
@@ -271,7 +279,7 @@ def main():
         # Build tile data
         print(f"  {cfg['file']}: generating {cfg['map_cols']}x{cfg['map_rows']} layout...", end='', flush=True)
         data = build_tile_data(cfg['layout_fn'], cfg['map_cols'], cfg['map_rows'])
-        tile_count = len(data) // 3
+        tile_count = len(data) // 12
         print(f" {tile_count} tiles placed")
 
         # Ext resource line
@@ -281,15 +289,11 @@ def main():
             f'id="{cfg["ext_id"]}"]'
         )
 
-        # TileMap node block
+        # TileMapLayer node block (Godot 4.2+ — replaces deprecated TileMap)
         tilemap_block = f"""\
-[node name="TileMap" type="TileMap" parent="."]
+[node name="TileMap" type="TileMapLayer" parent="."]
 tile_set = ExtResource("{cfg['ext_id']}")
-format = 2
-layer_0/name = "Ground"
-layer_0/y_sort_enabled = false
-layer_0/z_index = 0
-layer_0/tile_data = {pack(data)}"""
+tile_map_data = {pack(data)}"""
 
         # Apply patches
         text = increment_load_steps(text)
