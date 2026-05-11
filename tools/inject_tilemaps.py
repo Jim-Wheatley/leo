@@ -26,26 +26,41 @@ SCENE_DIR  = os.path.join(PROJECT_ROOT, 'scenes', 'environments')
 TILESET_DIR = os.path.join(PROJECT_ROOT, 'assets', 'sprites', 'tilesets')
 
 
-# ── Tile-data encoding (TileMapLayer / PackedByteArray) ──────────────────────
-# Each cell = 12 bytes, little-endian:
-#   uint16 map_x | uint16 map_y | uint32 source_id | uint16 atlas_x | uint16 atlas_y
+# ── Tile-data encoding (TileMapLayer / PackedByteArray, Godot 4.5 format) ────
+#
+# Godot 4.5 tile_map_data layout (from tile_map_layer.cpp):
+#   Byte 0-1  : uint16  format version  (= 0, TILE_MAP_LAYER_DATA_FORMAT_0)
+#   Per cell (12 bytes, all uint16 little-endian):
+#     +0  int16   map_x
+#     +2  int16   map_y
+#     +4  uint16  source_id
+#     +6  uint16  atlas_x
+#     +8  uint16  atlas_y
+#     +10 uint16  alternative_tile  (0 = default)
+#
+# Total size = 2 + (num_cells * 12)
 
-def encode_cell_bytes(mx, my, ax, ay, source=0):
+TILE_MAP_LAYER_DATA_FORMAT_0 = 0
+
+
+def encode_cell_bytes(mx, my, ax, ay, source=0, alt=0):
     """Return 12 bytes encoding one TileMapLayer cell."""
-    return struct.pack('<HHIHH',
-                      mx & 0xFFFF,
-                      my & 0xFFFF,
-                      source,
+    return struct.pack('<HHHHHH',
+                      mx & 0xFFFF,   # map_x  (read back as int16)
+                      my & 0xFFFF,   # map_y  (read back as int16)
+                      source & 0xFFFF,
                       ax & 0xFFFF,
-                      ay & 0xFFFF)
+                      ay & 0xFFFF,
+                      alt & 0xFFFF)
 
 
 def build_tile_data(layout_fn, cols, rows):
     """
     Call layout_fn(col, row) → (atlas_x, atlas_y) or None for empty.
-    Returns a bytearray ready for PackedByteArray.
+    Returns a bytearray ready for PackedByteArray (includes 2-byte header).
     """
-    buf = bytearray()
+    # 2-byte format-version header required by Godot 4.5
+    buf = bytearray(struct.pack('<H', TILE_MAP_LAYER_DATA_FORMAT_0))
     for y in range(rows):
         for x in range(cols):
             result = layout_fn(x, y)
@@ -279,7 +294,7 @@ def main():
         # Build tile data
         print(f"  {cfg['file']}: generating {cfg['map_cols']}x{cfg['map_rows']} layout...", end='', flush=True)
         data = build_tile_data(cfg['layout_fn'], cfg['map_cols'], cfg['map_rows'])
-        tile_count = len(data) // 12
+        tile_count = (len(data) - 2) // 12  # subtract 2-byte header
         print(f" {tile_count} tiles placed")
 
         # Ext resource line

@@ -37,10 +37,17 @@ SCENES = ['Workshop.tscn', 'Florence.tscn', 'NaturalAreas.tscn']
 
 def int32_array_to_byte_array(int32_values: list[int]) -> str:
     """
-    Convert a flat list of TileMap int32 values to a TileMapLayer
-    PackedByteArray literal string.
+    Convert a flat list of TileMap (deprecated) int32 values to a Godot 4.5
+    TileMapLayer PackedByteArray literal string.
+
+    Godot 4.5 tile_map_data layout (tile_map_layer.cpp):
+      2-byte header : uint16 = 0  (TILE_MAP_LAYER_DATA_FORMAT_0)
+      Per cell (12 bytes, all uint16 LE):
+        map_x(u16) map_y(u16) source_id(u16) atlas_x(u16) atlas_y(u16) alt(u16)
     """
-    buf = bytearray()
+    # 2-byte format-version header
+    buf = bytearray(struct.pack('<H', 0))
+
     for i in range(0, len(int32_values), 3):
         coords    = int32_values[i]
         source_id = int32_values[i + 1]
@@ -50,8 +57,11 @@ def int32_array_to_byte_array(int32_values: list[int]) -> str:
         map_y   = (coords >> 16) & 0xFFFF
         atlas_x = atlas & 0xFFFF
         atlas_y = (atlas >> 16) & 0xFFFF
+        alt     = 0
 
-        buf += struct.pack('<HHIHH', map_x, map_y, source_id, atlas_x, atlas_y)
+        # All fields are uint16; source_id must be uint16 (not uint32)
+        buf += struct.pack('<HHHHHH', map_x, map_y, source_id & 0xFFFF,
+                           atlas_x, atlas_y, alt)
 
     return 'PackedByteArray(' + ', '.join(str(b) for b in buf) + ')'
 
