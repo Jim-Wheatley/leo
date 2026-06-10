@@ -25,6 +25,16 @@ VFXManager="*res://scripts/singletons/VFXManager.gd"
 TutorialManager="*res://scripts/singletons/TutorialManager.gd"
 AchievementManager="*res://scripts/singletons/AchievementManager.gd"
 AchievementNotificationUI="*res://scenes/ui/AchievementNotification.tscn"
+MasterArtistAgent="*res://scripts/systems/MasterArtistAgent.gd"
+
+[display]
+
+window/size/viewport_width=384
+window/size/viewport_height=216
+window/size/window_width_override=1152
+window/size/window_height_override=648
+window/stretch/mode="canvas_items"
+window/stretch/scale_mode="integer"
 
 [input]
 

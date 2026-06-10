@@ -137,20 +137,25 @@ func update_progress(objective_id: String, amount: int = 1):
 	"""Update progress on a specific objective"""
 	if status != TaskStatus.IN_PROGRESS:
 		return
-	
+
 	if not current_progress.has(objective_id):
 		current_progress[objective_id] = 0
-	
-	current_progress[objective_id] += amount
-	
-	# Find the objective to check completion
+
+	# Find the objective so we can cap at target and print completion once
 	for objective in objectives:
 		if objective.get("id", "") == objective_id:
 			var target_value = objective.get("target", 1)
-			var current_value = current_progress[objective_id]
+			var before = current_progress[objective_id]
+
+			# Don't increment past the target — prevents repeated "completed" prints
+			if before >= target_value:
+				return
+
+			current_progress[objective_id] = mini(before + amount, target_value)
+
+			var after = current_progress[objective_id]
 			var obj_description = objective.get("description", "Unknown objective")
-			
-			if current_value >= target_value:
+			if after >= target_value:
 				print("✅ Objective completed: %s" % obj_description)
 			break
 

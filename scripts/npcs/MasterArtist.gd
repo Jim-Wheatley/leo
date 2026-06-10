@@ -6,54 +6,105 @@ extends CharacterBody2D
 @onready var interaction_area: Area2D = $InteractionArea
 
 var dialogue_system: DialogueSystem
+var master_artist_agent  # MasterArtistAgent — handles AI task generation
 var current_task_offer: TaskData = null
 var last_interaction_time: float = 0.0
 var last_interaction_frame: int = -9999
+var _is_requesting_task: bool = false  # True while waiting for AI response
 
 func _ready():
 	# Create dialogue system
 	dialogue_system = preload("res://scripts/systems/DialogueSystem.gd").new()
 	add_child(dialogue_system)
-	
+
 	# Connect dialogue signals
 	dialogue_system.option_selected.connect(_on_dialogue_option_selected)
 	dialogue_system.dialogue_finished.connect(_on_dialogue_finished)
-	
+
 	# Connect to task system
 	TaskManager.task_completed.connect(_on_task_completed)
 	TaskManager.new_tasks_available.connect(_on_new_tasks_available)
 
+	# Create the AI agent that generates tasks via the local LLM
+	master_artist_agent = preload("res://scripts/systems/MasterArtistAgent.gd").new()
+	add_child(master_artist_agent)
+	print("✅ MasterArtist: AI agent ready")
+
 func interact_with_player():
 	"""Main interaction method called when player interacts"""
 	# Prevent rapid interactions
-	# Use a simple frame-based cooldown to avoid intermittent RNG/time issues
 	var current_frame = Engine.get_frames_drawn()
 	var cooldown_frames = 10  # ~10 frames cooldown (~0.16s at 60fps)
 	if current_frame - last_interaction_frame < cooldown_frames:
 		print("MasterArtist: interaction blocked by cooldown (frame %d, last %d)" % [current_frame, last_interaction_frame])
 		return
 	last_interaction_frame = current_frame
-	
+
+	# If the AI is already mid-request, don't start another one
+	if _is_requesting_task:
+		dialogue_system.show_simple_dialogue(
+			"Master Artist",
+			"One moment, apprentice... I am still contemplating your next challenge."
+		)
+		return
+
 	# Check for completed tasks first
 	var completed_tasks = check_for_completed_tasks()
 	if completed_tasks.size() > 0:
 		handle_task_completion(completed_tasks[0])
 		return
-	
-	# Check for available tasks
+
+	# Check for available pre-defined tasks
 	var available_tasks = TaskManager.get_available_tasks()
 	if available_tasks.size() > 0:
 		offer_task(available_tasks[0])
 		return
-	
-	# Check for tasks in progress
+
+	# Check for tasks currently in progress
 	var active_tasks = TaskManager.get_active_tasks()
 	if active_tasks.size() > 0:
 		provide_task_guidance(active_tasks[0])
 		return
-	
-	# Default dialogue based on progress
-	provide_general_guidance()
+
+	# No tasks at all — ask the AI to generate a personalised new one
+	_request_ai_task()
+
+func _request_ai_task():
+	"""Ask MasterArtistAgent for a new AI-generated task.
+
+	This function uses 'await' so it runs asynchronously — the game keeps
+	running normally while we wait for the LLM to respond (a few seconds).
+	"""
+	_is_requesting_task = true
+
+	# Immediate feedback so the player knows the master is "thinking"
+	dialogue_system.show_simple_dialogue(
+		"Master Artist",
+		"Hmm... let me consider what would best serve your growth at this stage, apprentice. A moment..."
+	)
+	print("🤖 MasterArtist: Requesting AI-generated task from MasterArtistAgent...")
+
+	# Wait for the LLM to respond (this is the async part — could take 2-10 seconds)
+	var ai_task: TaskData = await master_artist_agent.generate_task()
+
+	_is_requesting_task = false
+
+	if ai_task != null:
+		# Success — register the task so TaskManager knows about it, then offer it
+		print("✅ MasterArtist: AI task received — '%s'" % ai_task.title)
+		TaskManager.register_ai_task(ai_task)
+		offer_task(ai_task)
+	else:
+		# AI failed (LM Studio offline, bad JSON, etc.) — use a fallback
+		print("⚠️ MasterArtist: AI task generation failed — showing fallback guidance")
+		_offer_fallback_guidance()
+
+func _offer_fallback_guidance():
+	"""Shown when the AI is unavailable or returns invalid output."""
+	var guidance = get_guidance_based_on_skills()
+	var full_message = guidance
+	full_message += "\n\n(My thoughts are scattered today, apprentice. Return in a moment and I shall have a proper task for you.)"
+	dialogue_system.show_simple_dialogue("Master Artist", full_message)
 
 func check_for_completed_tasks() -> Array:
 	"""Check if player has any tasks ready for completion"""

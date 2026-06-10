@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://djq3prehglu67"]
+
+[ext_resource type="Script" uid="uid://efiow5cx0pv6" path="res://scripts/systems/test_llm_client.gd" id="1_eapci"]
+
+[node name="Client_LLM_Test" type="Node2D"]
+
+[node name="TestScript" type="Node" parent="."]
+script = ExtResource("1_eapci")

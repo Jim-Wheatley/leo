@@ -1,20 +1,33 @@
-[gd_scene load_steps=9 format=3 uid="uid://bqwkwdgwprvdk"]
+[gd_scene load_steps=11 format=4 uid="uid://bqwkwdgwprvdk"]
 
-[ext_resource type="Script" path="res://scripts/environments/Workshop.gd" id="1_workshop_script"]
-[ext_resource type="Script" path="res://scripts/player/PlayerController.gd" id="2_player_script"]
-[ext_resource type="Script" path="res://scripts/npcs/MasterArtist.gd" id="3_master_script"]
-[ext_resource type="Script" path="res://scripts/crafting/PaintCreationStation.gd" id="4_paint_station_script"]
-[ext_resource type="Script" path="res://scripts/crafting/CanvasMakingStation.gd" id="5_canvas_station_script"]
-[ext_resource type="Script" path="res://scripts/crafting/ArtworkCreationStation.gd" id="6_artwork_station_script"]
+[ext_resource type="Script" uid="uid://csvyo2eenffyg" path="res://scripts/environments/Workshop.gd" id="1_workshop_script"]
+[ext_resource type="Script" uid="uid://dsb4a1nbl3f5d" path="res://scripts/player/PlayerController.gd" id="2_player_script"]
+[ext_resource type="Script" uid="uid://coxfotp2xpiij" path="res://scripts/npcs/MasterArtist.gd" id="3_master_script"]
+[ext_resource type="Script" uid="uid://nda6dgnhs3rn" path="res://scripts/crafting/PaintCreationStation.gd" id="4_paint_station_script"]
+[ext_resource type="Script" uid="uid://n7bnuhcxmke8" path="res://scripts/crafting/CanvasMakingStation.gd" id="5_canvas_station_script"]
+[ext_resource type="Script" uid="uid://c4l6w36xoh0an" path="res://scripts/crafting/ArtworkCreationStation.gd" id="6_artwork_station_script"]
 [ext_resource type="PackedScene" uid="uid://bvxcvxcvxcvxc" path="res://scenes/ui/MainHUD.tscn" id="7_main_hud"]
+[ext_resource type="TileSet" uid="uid://bebyvffxd2kxm" path="res://assets/sprites/tilesets/workshop_tileset.tres" id="ts_workshop"]
+[ext_resource type="TileSet" uid="uid://b7caurjmeiyo5" path="res://assets/sprites/tilesets/workshop_objects_tileset.tres" id="ts_workshop_obj"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(32, 32)
 
 [node name="Workshop" type="Node2D"]
+position = Vector2(-1, 0)
 script = ExtResource("1_workshop_script")
 
+[node name="TileMap" type="TileMapLayer" parent="."]
+tile_map_data = PackedByteArray("AAAAAAAAAAAGAAEAAAABAAAAAAAAAAEAAAACAAAAAAABAAAAAAADAAAAAAABAAAAAAAEAAAAAAABAAAAAAAFAAAAAAABAAAAAAAGAAAAAAABAAAAAAAHAAAAAAABAAAAAAAIAAAAAAABAAAAAAAJAAAAAAABAAAAAAAKAAAAAAABAAAAAAALAAAAAAABAAAAAAAMAAAAAAABAAAAAAANAAAAAAABAAAAAAAOAAAAAAABAAEAAAAPAAAAAAAHAAEAAAAAAAEAAAAAAAEAAAABAAEAAAADAAIAAAACAAEAAAAAAAAAAAADAAEAAAAAAAAAAAAEAAEAAAAAAAAAAAAFAAEAAAAAAAAAAAAGAAEAAAAAAAAAAAAHAAEAAAAAAAAAAAAIAAEAAAAAAAAAAAAJAAEAAAAAAAAAAAAKAAEAAAAAAAAAAAALAAEAAAAAAAAAAAAMAAEAAAAAAAAAAAANAAEAAAAAAAAAAAAOAAEAAAACAAIAAAAPAAEAAAABAAEAAAAAAAIAAAADAAAAAAABAAIAAAAAAAAAAAACAAIAAAAAAAAAAAADAAIAAAAAAAAAAAAEAAIAAAAAAAAAAAAFAAIAAAAAAAAAAAAGAAIAAAAAAAAAAAAHAAIAAAAAAAAAAAAIAAIAAAAAAAAAAAAJAAIAAAAAAAAAAAAKAAIAAAAAAAAAAAALAAIAAAAAAAAAAAAMAAIAAAAAAAAAAAANAAIAAAAAAAAAAAAOAAIAAAAAAAAAAAAPAAIAAAAEAAAAAAAAAAMAAAADAAAAAAABAAMAAAAAAAAAAAACAAMAAAAAAAAAAAADAAMAAAAAAAAAAAAEAAMAAAAAAAAAAAAFAAMAAAAAAAAAAAAGAAMAAAAAAAAAAAAHAAMAAAAAAAAAAAAIAAMAAAAAAAAAAAAJAAMAAAAAAAAAAAAKAAMAAAAAAAAAAAALAAMAAAAAAAAAAAAMAAMAAAAAAAAAAAANAAMAAAAAAAAAAAAOAAMAAAAAAAAAAAAPAAMAAAAEAAAAAAAAAAQAAAADAAAAAAABAAQAAAAAAAAAAAACAAQAAAAAAAAAAAADAAQAAAAAAAAAAAAEAAQAAAAAAAAAAAAFAAQAAAAAAAAAAAAGAAQAAAAAAAAAAAAHAAQAAAAAAAAAAAAIAAQAAAAAAAAAAAAJAAQAAAAAAAAAAAAKAAQAAAAAAAAAAAALAAQAAAAAAAAAAAAMAAQAAAAAAAAAAAANAAQAAAAAAAAAAAAOAAQAAAAAAAAAAAAPAAQAAAAEAAAAAAAAAAUAAAADAAAAAAABAAUAAAAAAAAAAAACAAUAAAAAAAAAAAADAAUAAAAAAAAAAAAEAAUAAAAAAAAAAAAFAAUAAAAAAAAAAAAGAAUAAAAAAAAAAAAHAAUAAAAAAAAAAAAIAAUAAAAAAAAAAAAJAAUAAAAAAAAAAAAKAAUAAAAAAAAAAAALAAUAAAAAAAAAAAAMAAUAAAAAAAAAAAANAAUAAAAAAAAAAAAOAAUAAAAAAAAAAAAPAAUAAAAEAAAAAAAAAAYAAAADAAAAAAABAAYAAAAAAAAAAAACAAYAAAAAAAAAAAADAAYAAAAAAAAAAAAEAAYAAAAAAAAAAAAFAAYAAAAAAAAAAAAGAAYAAAAAAAAAAAAHAAYAAAAAAAAAAAAIAAYAAAAAAAAAAAAJAAYAAAAAAAAAAAAKAAYAAAAAAAAAAAALAAYAAAAAAAAAAAAMAAYAAAAAAAAAAAANAAYAAAAAAAAAAAAOAAYAAAAAAAAAAAAPAAYAAAAEAAAAAAAAAAcAAAADAAAAAAABAAcAAAAAAAAAAAACAAcAAAAAAAAAAAADAAcAAAAAAAAAAAAEAAcAAAAAAAAAAAAFAAcAAAAAAAAAAAAGAAcAAAAAAAAAAAAHAAcAAAAAAAAAAAAIAAcAAAAAAAAAAAAJAAcAAAAAAAAAAAAKAAcAAAAAAAAAAAALAAcAAAAAAAAAAAAMAAcAAAAAAAAAAAANAAcAAAAAAAAAAAAOAAcAAAAAAAAAAAAPAAcAAAAEAAAAAAAAAAgAAAADAAAAAAABAAgAAAAAAAAAAAACAAgAAAAAAAAAAAADAAgAAAAAAAAAAAAEAAgAAAAAAAAAAAAFAAgAAAAAAAAAAAAGAAgAAAAAAAAAAAAHAAgAAAAAAAAAAAAIAAgAAAAAAAAAAAAJAAgAAAAAAAAAAAAKAAgAAAAAAAAAAAALAAgAAAAAAAAAAAAMAAgAAAAAAAAAAAANAAgAAAAAAAAAAAAOAAgAAAAAAAAAAAAPAAgAAAAEAAAAAAAAAAkAAAADAAAAAAABAAkAAAAAAAAAAAACAAkAAAAAAAAAAAADAAkAAAAAAAAAAAAEAAkAAAAAAAAAAAAFAAkAAAAAAAAAAAAGAAkAAAAAAAAAAAAHAAkAAAAAAAAAAAAIAAkAAAAAAAAAAAAJAAkAAAAAAAAAAAAKAAkAAAAAAAAAAAALAAkAAAAAAAAAAAAMAAkAAAAAAAAAAAANAAkAAAAAAAAAAAAOAAkAAAAAAAAAAAAPAAkAAAAEAAAAAAAAAAoAAAAAAAIAAAABAAoAAAADAAEAAAACAAoAAAAAAAAAAAADAAoAAAAAAAAAAAAEAAoAAAAAAAAAAAAFAAoAAAAAAAAAAAAGAAoAAAAAAAAAAAAHAAoAAAAAAAAAAAAIAAoAAAAAAAAAAAAJAAoAAAAAAAAAAAAKAAoAAAAAAAAAAAALAAoAAAAAAAAAAAAMAAoAAAAAAAAAAAANAAoAAAAAAAAAAAAOAAoAAAACAAEAAAAPAAoAAAABAAIAAAAAAAsAAAAGAAEAAAABAAsAAAAAAAIAAAACAAsAAAACAAAAAAADAAsAAAACAAAAAAAEAAsAAAACAAAAAAAFAAsAAAACAAAAAAAGAAsAAAACAAAAAAAHAAsAAAAFAAAAAAAIAAsAAAAGAAAAAAAJAAsAAAACAAAAAAAKAAsAAAACAAAAAAALAAsAAAACAAAAAAAMAAsAAAACAAAAAAANAAsAAAACAAAAAAAOAAsAAAABAAIAAAAPAAsAAAAGAAEAAAA=")
+tile_set = ExtResource("ts_workshop")
+
+[node name="Objects" type="TileMapLayer" parent="."]
+z_index = 1
+tile_map_data = PackedByteArray("AAALAAMAAAAEAAAAAAAMAAMAAAAFAAAAAAALAAQAAAAEAAEAAAAMAAQAAAAFAAEAAAAHAAMAAAACAAAAAAAIAAMAAAADAAAAAAAHAAQAAAACAAEAAAAIAAQAAAADAAEAAAADAAMAAAAAAAAAAAAEAAMAAAABAAAAAAADAAQAAAAAAAEAAAAEAAQAAAABAAEAAAADAAEAAAAAAAIAAAAEAAEAAAABAAIAAAALAAEAAAACAAIAAAAMAAEAAAADAAIAAAAMAAkAAAAFAAIAAAAMAAoAAAAFAAMAAAACAAkAAAAEAAIAAAACAAgAAAAEAAIAAAADAAgAAAAGAAAAAAADAAkAAAAGAAEAAAAEAAgAAAAHAAAAAAAEAAkAAAAHAAEAAAA=")
+tile_set = ExtResource("ts_workshop_obj")
+
 [node name="Background" type="ColorRect" parent="."]
+visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -23,6 +36,7 @@ offset_bottom = 768.0
 color = Color(0.8, 0.7, 0.6, 1)
 
 [node name="WorkshopFloor" type="ColorRect" parent="."]
+visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -33,7 +47,7 @@ offset_bottom = 718.0
 color = Color(0.9, 0.8, 0.7, 1)
 
 [node name="Player" type="CharacterBody2D" parent="."]
-position = Vector2(180, 400)
+position = Vector2(202, 150)
 script = ExtResource("2_player_script")
 
 [node name="Sprite2D" type="ColorRect" parent="Player"]
@@ -42,6 +56,7 @@ offset_top = -16.0
 offset_right = 16.0
 offset_bottom = 16.0
 color = Color(0.2, 0.4, 0.8, 1)
+metadata/_edit_use_anchors_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
 shape = SubResource("RectangleShape2D_1")
@@ -56,67 +71,75 @@ shape = SubResource("RectangleShape2D_1")
 [node name="WorkstationNodes" type="Node2D" parent="."]
 
 [node name="PaintStation" type="StaticBody2D" parent="WorkstationNodes"]
-position = Vector2(200, 200)
+position = Vector2(288, 96)
 script = ExtResource("4_paint_station_script")
 
 [node name="PaintStationSprite" type="ColorRect" parent="WorkstationNodes/PaintStation"]
+visible = false
 offset_left = -25.0
 offset_top = -25.0
 offset_right = 25.0
 offset_bottom = 25.0
 color = Color(0.6, 0.3, 0.2, 1)
+metadata/_edit_use_anchors_ = true
 
 [node name="PaintStationCollision" type="CollisionShape2D" parent="WorkstationNodes/PaintStation"]
 shape = SubResource("RectangleShape2D_1")
 
 [node name="CanvasStation" type="StaticBody2D" parent="WorkstationNodes"]
-position = Vector2(400, 200)
+position = Vector2(96, 96)
 script = ExtResource("5_canvas_station_script")
 
 [node name="CanvasStationSprite" type="ColorRect" parent="WorkstationNodes/CanvasStation"]
+visible = false
 offset_left = -25.0
 offset_top = -25.0
 offset_right = 25.0
 offset_bottom = 25.0
 color = Color(0.9, 0.9, 0.8, 1)
+metadata/_edit_use_anchors_ = true
 
 [node name="CanvasStationCollision" type="CollisionShape2D" parent="WorkstationNodes/CanvasStation"]
 shape = SubResource("RectangleShape2D_1")
 
 [node name="ArtworkStation" type="StaticBody2D" parent="WorkstationNodes"]
-position = Vector2(600, 200)
+position = Vector2(191, 95)
 script = ExtResource("6_artwork_station_script")
 
 [node name="ArtworkStationSprite" type="ColorRect" parent="WorkstationNodes/ArtworkStation"]
+visible = false
 offset_left = -25.0
 offset_top = -25.0
 offset_right = 25.0
 offset_bottom = 25.0
 color = Color(0.8, 0.4, 0.6, 1)
+metadata/_edit_use_anchors_ = true
 
 [node name="ArtworkStationCollision" type="CollisionShape2D" parent="WorkstationNodes/ArtworkStation"]
 shape = SubResource("RectangleShape2D_1")
 
 [node name="ExitDoor" type="StaticBody2D" parent="."]
-position = Vector2(100, 400)
+position = Vector2(191, 278)
 
 [node name="ExitDoorSprite" type="ColorRect" parent="ExitDoor"]
 offset_left = -30.0
 offset_top = -40.0
 offset_right = 30.0
 offset_bottom = 40.0
-color = Color(0.4, 0.2, 0.1, 1)
+color = Color(0.4, 0.2, 0.101960786, 0)
+metadata/_edit_use_anchors_ = true
 
 [node name="ExitDoorLabel" type="Label" parent="ExitDoor"]
 offset_left = -25.0
-offset_top = -60.0
+offset_top = 9.0
 offset_right = 25.0
-offset_bottom = -40.0
+offset_bottom = 32.0
 text = "Exit"
 horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="MasterArtist" type="CharacterBody2D" parent="."]
-position = Vector2(800, 300)
+position = Vector2(336, 144)
 script = ExtResource("3_master_script")
 
 [node name="MasterSprite" type="ColorRect" parent="MasterArtist"]
@@ -125,6 +148,7 @@ offset_top = -20.0
 offset_right = 20.0
 offset_bottom = 20.0
 color = Color(0.8, 0.6, 0.4, 1)
+metadata/_edit_use_anchors_ = true
 
 [node name="MasterCollision" type="CollisionShape2D" parent="MasterArtist"]
 shape = SubResource("RectangleShape2D_1")
@@ -135,6 +159,7 @@ shape = SubResource("RectangleShape2D_1")
 shape = SubResource("RectangleShape2D_1")
 
 [node name="MainHUD" parent="." instance=ExtResource("7_main_hud")]
+visible = false
 
 [node name="InteractionPrompt" type="Label" parent="."]
 visible = false
