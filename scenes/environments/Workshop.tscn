@@ -8,7 +8,7 @@
 [ext_resource type="Script" uid="uid://c4l6w36xoh0an" path="res://scripts/crafting/ArtworkCreationStation.gd" id="6_artwork_station_script"]
 [ext_resource type="PackedScene" uid="uid://bvxcvxcvxcvxc" path="res://scenes/ui/MainHUD.tscn" id="7_main_hud"]
 [ext_resource type="TileSet" uid="uid://bebyvffxd2kxm" path="res://assets/sprites/tilesets/workshop_tileset.tres" id="ts_workshop"]
-[ext_resource type="TileSet" path="res://assets/sprites/tilesets/workshop_objects_tileset.tres" id="ts_workshop_obj"]
+[ext_resource type="TileSet" uid="uid://b7caurjmeiyo5" path="res://assets/sprites/tilesets/workshop_objects_tileset.tres" id="ts_workshop_obj"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(32, 32)
@@ -22,8 +22,9 @@ tile_map_data = PackedByteArray("AAAAAAAAAAAGAAEAAAABAAAAAAAAAAEAAAACAAAAAAABAAA
 tile_set = ExtResource("ts_workshop")
 
 [node name="Objects" type="TileMapLayer" parent="."]
-tile_set = ExtResource("ts_workshop_obj")
 z_index = 1
+tile_map_data = PackedByteArray("AAALAAMAAAAEAAAAAAAMAAMAAAAFAAAAAAALAAQAAAAEAAEAAAAMAAQAAAAFAAEAAAAHAAMAAAACAAAAAAAIAAMAAAADAAAAAAAHAAQAAAACAAEAAAAIAAQAAAADAAEAAAADAAMAAAAAAAAAAAAEAAMAAAABAAAAAAADAAQAAAAAAAEAAAAEAAQAAAABAAEAAAADAAEAAAAAAAIAAAAEAAEAAAABAAIAAAALAAEAAAACAAIAAAAMAAEAAAADAAIAAAAMAAkAAAAFAAIAAAAMAAoAAAAFAAMAAAACAAkAAAAEAAIAAAACAAgAAAAEAAIAAAADAAgAAAAGAAAAAAADAAkAAAAGAAEAAAAEAAgAAAAHAAAAAAAEAAkAAAAHAAEAAAA=")
+tile_set = ExtResource("ts_workshop_obj")
 
 [node name="Background" type="ColorRect" parent="."]
 visible = false
@@ -70,10 +71,11 @@ shape = SubResource("RectangleShape2D_1")
 [node name="WorkstationNodes" type="Node2D" parent="."]
 
 [node name="PaintStation" type="StaticBody2D" parent="WorkstationNodes"]
-position = Vector2(285, 73)
+position = Vector2(288, 96)
 script = ExtResource("4_paint_station_script")
 
 [node name="PaintStationSprite" type="ColorRect" parent="WorkstationNodes/PaintStation"]
+visible = false
 offset_left = -25.0
 offset_top = -25.0
 offset_right = 25.0
@@ -85,10 +87,11 @@ metadata/_edit_use_anchors_ = true
 shape = SubResource("RectangleShape2D_1")
 
 [node name="CanvasStation" type="StaticBody2D" parent="WorkstationNodes"]
-position = Vector2(95, 73)
+position = Vector2(96, 96)
 script = ExtResource("5_canvas_station_script")
 
 [node name="CanvasStationSprite" type="ColorRect" parent="WorkstationNodes/CanvasStation"]
+visible = false
 offset_left = -25.0
 offset_top = -25.0
 offset_right = 25.0
@@ -100,10 +103,11 @@ metadata/_edit_use_anchors_ = true
 shape = SubResource("RectangleShape2D_1")
 
 [node name="ArtworkStation" type="StaticBody2D" parent="WorkstationNodes"]
-position = Vector2(188, 73)
+position = Vector2(191, 95)
 script = ExtResource("6_artwork_station_script")
 
 [node name="ArtworkStationSprite" type="ColorRect" parent="WorkstationNodes/ArtworkStation"]
+visible = false
 offset_left = -25.0
 offset_top = -25.0
 offset_right = 25.0
@@ -135,7 +139,7 @@ horizontal_alignment = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="MasterArtist" type="CharacterBody2D" parent="."]
-position = Vector2(305, 219)
+position = Vector2(336, 144)
 script = ExtResource("3_master_script")
 
 [node name="MasterSprite" type="ColorRect" parent="MasterArtist"]
