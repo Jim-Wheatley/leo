@@ -519,6 +519,26 @@ func get_task(task_id: String) -> TaskData:
 	"""Get a specific task by ID"""
 	return all_tasks.get(task_id, null)
 
+func register_ai_task(task: TaskData) -> bool:
+	"""Register a dynamically AI-generated task into the task pool.
+
+	Because the AI might reuse a task_id it invented before, we check for
+	collisions and append a timestamp suffix to keep IDs unique.
+	"""
+	if task == null:
+		return false
+
+	# Avoid duplicate task IDs from repeat AI calls
+	if all_tasks.has(task.task_id):
+		task.task_id = task.task_id + "_" + str(Time.get_ticks_msec())
+
+	task.status = TaskData.TaskStatus.NOT_STARTED
+	all_tasks[task.task_id] = task
+
+	print("📋 TaskManager: Registered AI task '%s' (id: %s)" % [task.title, task.task_id])
+	new_tasks_available.emit()
+	return true
+
 func get_task_for_activity(activity_type: String, activity_data: Dictionary = {}) -> TaskData:
 	"""Find a task that matches the given activity"""
 	for task_id in all_tasks:
@@ -542,15 +562,19 @@ func on_item_crafted(item_type: String, item_id: String):
 		var task = all_tasks[task_id]
 		if task.status != TaskData.TaskStatus.IN_PROGRESS:
 			continue
-		
+
 		for objective in task.objectives:
 			var obj_type = objective.get("type", "")
 			var obj_id = objective.get("id", "")
-			
-			if obj_type == "craft_item" and objective.get("item_type", "") == item_type:
-				update_task_progress(task_id, obj_id, 1)
+			var required_item_type = objective.get("item_type", "")
+
+			if obj_type == "craft_item":
+				# Match if the objective specifies a type AND it matches,
+				# OR if no item_type was set (AI-generated tasks may omit it — count any craft).
+				if required_item_type == "" or required_item_type == item_type:
+					update_task_progress(task_id, obj_id, 1)
 			elif obj_type == "craft_different_colors" and item_type == "paint":
-				# Special handling for color variety task
+				# Special handling for the colour-variety pre-set task
 				update_task_progress(task_id, obj_id, 1)
 
 func on_artwork_created(artwork: ArtworkData):
