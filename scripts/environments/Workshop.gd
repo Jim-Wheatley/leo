@@ -70,21 +70,15 @@ func setup_interactions():
 			var new_collision_shape = CollisionShape2D.new()
 			new_collision_shape.name = "InteractionShape"
 			var shape = RectangleShape2D.new()
-			shape.size = Vector2(100, 100)
+			shape.size = Vector2(48, 48)
 			new_collision_shape.shape = shape
 			master_interaction_area.add_child(new_collision_shape)
 		
-		# Ensure existing collision shape is large enough
+		# Set interaction shape to one tile of reach in each direction
 		var existing_shape = master_interaction_area.get_node_or_null("InteractionShape")
 		if existing_shape and existing_shape.shape:
 			if existing_shape.shape is RectangleShape2D:
-				var rect_shape = existing_shape.shape as RectangleShape2D
-				if rect_shape.size.x < 100 or rect_shape.size.y < 100:
-					rect_shape.size = Vector2(120, 120)
-			elif existing_shape.shape is CircleShape2D:
-				var circle_shape = existing_shape.shape as CircleShape2D
-				if circle_shape.radius < 60:
-					circle_shape.radius = 60
+				(existing_shape.shape as RectangleShape2D).size = Vector2(48, 48)
 		
 		# Configure Area2D for detection only (not solid)
 		master_interaction_area.collision_layer = 0
@@ -122,7 +116,7 @@ func setup_workstation_interaction(workstation: Node, station_type: String):
 	
 	var collision_shape = CollisionShape2D.new()
 	var shape = RectangleShape2D.new()
-	shape.size = Vector2(60, 60)  # Larger interaction area
+	shape.size = Vector2(48, 48)
 	collision_shape.shape = shape
 	interaction_area.add_child(collision_shape)
 	

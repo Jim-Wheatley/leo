@@ -61,6 +61,7 @@ texture_filter = 1
 shape = SubResource("RectangleShape2D_1")
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
+zoom = Vector2(2, 2)
 
 [node name="InteractionArea" type="Area2D" parent="Player"]
 
