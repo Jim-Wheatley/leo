@@ -4,12 +4,19 @@ extends Node
 ## This agent gathers game state context, calls the local LLM via LLMClient,
 ## validates the AI-generated JSON, and returns a TaskData object or null.
 
+# Token budget for task generation. Must be generous: some models pretty-print
+# their JSON (indentation + newlines eat tokens), so a complete task object can
+# run well past a naive estimate. Too low and the JSON gets truncated mid-string
+# and fails to parse. This stops at the closing brace anyway, so a high ceiling
+# costs no extra latency on well-behaved responses.
+const TASK_MAX_TOKENS := 1500
+
 # Reference to the LLM client
 var llm_client: LLMClient
 
 # Set to false to skip the LLM entirely and use fallback dialogue.
 # Useful when LM Studio is not running or you want to test without AI.
-var ai_enabled: bool = false
+var ai_enabled: bool = true
 
 # Set to true to see detailed step-by-step logs in the Godot Output panel.
 var debug_mode: bool = true
@@ -232,10 +239,10 @@ func _call_llm(messages: Array) -> Dictionary:
 	"""Call the LLM and return the response or error"""
 	
 	var start_time = Time.get_ticks_msec()
-	print("[MasterArtistAgent] → REQUEST SENT  endpoint=%s  max_tokens=800" % (LLMClient.BASE_URL + LLMClient.ENDPOINT))
+	print("[MasterArtistAgent] → REQUEST SENT  endpoint=%s  max_tokens=%d" % [LLMClient.BASE_URL + LLMClient.ENDPOINT, TASK_MAX_TOKENS])
 
-	# Request more tokens for task generation (we need complete JSON)
-	var response = await llm_client.call_completions(messages, 800)
+	# Request enough tokens for task generation (we need complete, untruncated JSON)
+	var response = await llm_client.call_completions(messages, TASK_MAX_TOKENS)
 
 	var elapsed_ms = Time.get_ticks_msec() - start_time
 	if response.ok:
