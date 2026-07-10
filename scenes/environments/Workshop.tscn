@@ -7,10 +7,10 @@
 [ext_resource type="Script" uid="uid://n7bnuhcxmke8" path="res://scripts/crafting/CanvasMakingStation.gd" id="5_canvas_station_script"]
 [ext_resource type="Script" uid="uid://c4l6w36xoh0an" path="res://scripts/crafting/ArtworkCreationStation.gd" id="6_artwork_station_script"]
 [ext_resource type="PackedScene" uid="uid://bvxcvxcvxcvxc" path="res://scenes/ui/MainHUD.tscn" id="7_main_hud"]
+[ext_resource type="Texture2D" uid="uid://diq4aao0rd1hm" path="res://assets/sprites/characters/aldric.png" id="char_aldric"]
+[ext_resource type="Texture2D" uid="uid://coj5f04nxvdkd" path="res://assets/sprites/characters/player.png" id="char_player"]
 [ext_resource type="TileSet" uid="uid://bebyvffxd2kxm" path="res://assets/sprites/tilesets/workshop_tileset.tres" id="ts_workshop"]
 [ext_resource type="TileSet" uid="uid://b7caurjmeiyo5" path="res://assets/sprites/tilesets/workshop_objects_tileset.tres" id="ts_workshop_obj"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/player.png" id="char_player"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/aldric.png" id="char_aldric"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(32, 32)
@@ -52,21 +52,21 @@ color = Color(0.9, 0.8, 0.7, 1)
 position = Vector2(202, 150)
 script = ExtResource("2_player_script")
 
-[node name="Sprite2D" type="Sprite2D" parent="Player"]
-texture = ExtResource("char_player")
-scale = Vector2(2, 2)
-texture_filter = 1
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
-shape = SubResource("RectangleShape2D_1")
-
-[node name="Camera2D" type="Camera2D" parent="Player"]
-zoom = Vector2(2, 2)
-
 [node name="InteractionArea" type="Area2D" parent="Player"]
 
 [node name="InteractionShape" type="CollisionShape2D" parent="Player/InteractionArea"]
 shape = SubResource("RectangleShape2D_1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="Sprite2D" type="Sprite2D" parent="Player"]
+texture_filter = 1
+scale = Vector2(2, 2)
+texture = ExtResource("char_player")
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+zoom = Vector2(2, 2)
 
 [node name="WorkstationNodes" type="Node2D" parent="."]
 
@@ -142,11 +142,6 @@ metadata/_edit_use_anchors_ = true
 position = Vector2(336, 144)
 script = ExtResource("3_master_script")
 
-[node name="MasterSprite" type="Sprite2D" parent="MasterArtist"]
-texture = ExtResource("char_aldric")
-scale = Vector2(2, 2)
-texture_filter = 1
-
 [node name="MasterCollision" type="CollisionShape2D" parent="MasterArtist"]
 shape = SubResource("RectangleShape2D_1")
 
@@ -154,6 +149,11 @@ shape = SubResource("RectangleShape2D_1")
 
 [node name="InteractionShape" type="CollisionShape2D" parent="MasterArtist/InteractionArea"]
 shape = SubResource("RectangleShape2D_1")
+
+[node name="MasterSprite" type="Sprite2D" parent="MasterArtist"]
+texture_filter = 1
+scale = Vector2(2, 2)
+texture = ExtResource("char_aldric")
 
 [node name="MainHUD" parent="." instance=ExtResource("7_main_hud")]
 visible = false
