@@ -80,14 +80,18 @@ func register_dormant_agent(agent: Agent) -> void:
 	_add(agent, Tier.DORMANT)
 
 func _add(agent: Agent, tier: int) -> void:
+	# Add to the tree FIRST so the agent's _ready() -> _configure() runs and sets
+	# agent_name/location before we key anything off the name. (Character
+	# subclasses set their identity in _configure(), not at construction.)
+	if agent.get_parent() == null:
+		add_child(agent)
+
 	if _by_name.has(agent.agent_name):
 		push_warning("AgentManager: duplicate agent '%s' ignored" % agent.agent_name)
 		return
 	agents.append(agent)
 	_by_name[agent.agent_name] = agent
 	_set_tier(agent, tier)
-	if agent.get_parent() == null:
-		add_child(agent)
 	agent.thought_ready.connect(_on_agent_thought)
 	if agent.has_signal("thought_failed"):
 		agent.thought_failed.connect(_on_agent_thought_failed)

@@ -141,13 +141,17 @@ func _build_system_prompt(world_context: Dictionary) -> String:
 		parts.append("\nWHAT HAS HAPPENED BEFORE (summary):\n" + history_summary)
 
 	# Behavioural contract: stay in character, keep it short, use actions.
+	# The verb list is sourced from ActionParser so prompt and parser never
+	# drift apart (see live finding: models invent verbs like "step").
+	var verbs := ", ".join(ActionParser.KNOWN_VERBS)
 	parts.append("""
 Stay fully in character. Speak and act as %s would, in a fantasy medieval setting.
 Keep your reply to a few sentences — this is one moment in an ongoing day, not a speech.
-You MAY take in-world actions by embedding them on their own, using this exact syntax:
+You MAY take in-world actions by embedding tags EXACTLY like this, each on its own line:
 [ACTION: verb target]
-Examples: [ACTION: move market]  [ACTION: speak Player]  [ACTION: give Player pigment]  [ACTION: inspect commission]
-Only use actions that make sense for what you are doing. Narrate naturally; the actions drive the world.""" % agent_name)
+Use ONLY these verbs, nothing else: %s.
+Examples: [ACTION: move market]  [ACTION: speak Player]  [ACTION: give Player pigment]  [ACTION: inspect commission]  [ACTION: work commission]  [ACTION: emote angry]
+Do NOT invent other verbs. Acting is optional — plain dialogue is fine. Narrate naturally; the tags drive the world.""" % [agent_name, verbs])
 
 	return "\n".join(parts)
 
