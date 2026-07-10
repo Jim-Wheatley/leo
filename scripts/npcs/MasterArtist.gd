@@ -48,25 +48,16 @@ func interact_with_player():
 		)
 		return
 
-	# Check for completed tasks first
+	# Acknowledge any finished work first — it's rewarding for the player and
+	# doesn't compete with the AI demo.
 	var completed_tasks = check_for_completed_tasks()
 	if completed_tasks.size() > 0:
 		handle_task_completion(completed_tasks[0])
 		return
 
-	# Check for available pre-defined tasks
-	var available_tasks = TaskManager.get_available_tasks()
-	if available_tasks.size() > 0:
-		offer_task(available_tasks[0])
-		return
-
-	# Check for tasks currently in progress
-	var active_tasks = TaskManager.get_active_tasks()
-	if active_tasks.size() > 0:
-		provide_task_guidance(active_tasks[0])
-		return
-
-	# No tasks at all — ask the AI to generate a personalised new one
+	# DEMO: the master always asks the local LLM for a fresh, personalised task
+	# first. Pre-defined tasks / canned guidance now only surface via the
+	# fallback inside _request_ai_task() when the model is unavailable.
 	_request_ai_task()
 
 func _request_ai_task():

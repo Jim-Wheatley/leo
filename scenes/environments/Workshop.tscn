@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=4 uid="uid://bqwkwdgwprvdk"]
+[gd_scene load_steps=13 format=4 uid="uid://bqwkwdgwprvdk"]
 
 [ext_resource type="Script" uid="uid://csvyo2eenffyg" path="res://scripts/environments/Workshop.gd" id="1_workshop_script"]
 [ext_resource type="Script" uid="uid://dsb4a1nbl3f5d" path="res://scripts/player/PlayerController.gd" id="2_player_script"]
@@ -7,6 +7,8 @@
 [ext_resource type="Script" uid="uid://n7bnuhcxmke8" path="res://scripts/crafting/CanvasMakingStation.gd" id="5_canvas_station_script"]
 [ext_resource type="Script" uid="uid://c4l6w36xoh0an" path="res://scripts/crafting/ArtworkCreationStation.gd" id="6_artwork_station_script"]
 [ext_resource type="PackedScene" uid="uid://bvxcvxcvxcvxc" path="res://scenes/ui/MainHUD.tscn" id="7_main_hud"]
+[ext_resource type="Texture2D" uid="uid://diq4aao0rd1hm" path="res://assets/sprites/characters/aldric.png" id="char_aldric"]
+[ext_resource type="Texture2D" uid="uid://coj5f04nxvdkd" path="res://assets/sprites/characters/player.png" id="char_player"]
 [ext_resource type="TileSet" uid="uid://bebyvffxd2kxm" path="res://assets/sprites/tilesets/workshop_tileset.tres" id="ts_workshop"]
 [ext_resource type="TileSet" uid="uid://b7caurjmeiyo5" path="res://assets/sprites/tilesets/workshop_objects_tileset.tres" id="ts_workshop_obj"]
 
@@ -23,7 +25,7 @@ tile_set = ExtResource("ts_workshop")
 
 [node name="Objects" type="TileMapLayer" parent="."]
 z_index = 1
-tile_map_data = PackedByteArray("AAALAAMAAAAEAAAAAAAMAAMAAAAFAAAAAAALAAQAAAAEAAEAAAAMAAQAAAAFAAEAAAAHAAMAAAACAAAAAAAIAAMAAAADAAAAAAAHAAQAAAACAAEAAAAIAAQAAAADAAEAAAADAAMAAAAAAAAAAAAEAAMAAAABAAAAAAADAAQAAAAAAAEAAAAEAAQAAAABAAEAAAADAAEAAAAAAAIAAAAEAAEAAAABAAIAAAALAAEAAAACAAIAAAAMAAEAAAADAAIAAAAMAAkAAAAFAAIAAAAMAAoAAAAFAAMAAAACAAkAAAAEAAIAAAACAAgAAAAEAAIAAAADAAgAAAAGAAAAAAADAAkAAAAGAAEAAAAEAAgAAAAHAAAAAAAEAAkAAAAHAAEAAAA=")
+tile_map_data = PackedByteArray("AAALAAMAAAAEAAAAAAAMAAMAAAAFAAAAAAALAAQAAAAEAAEAAAAMAAQAAAAFAAEAAAAHAAMAAAACAAAAAAAIAAMAAAADAAAAAAAHAAQAAAACAAEAAAAIAAQAAAADAAEAAAADAAMAAAAAAAAAAAAEAAMAAAABAAAAAAADAAQAAAAAAAEAAAAEAAQAAAABAAEAAAADAAEAAAAAAAIAAAAEAAEAAAABAAIAAAALAAEAAAACAAIAAAAMAAEAAAADAAIAAAACAAgAAAAEAAIAAAADAAgAAAAGAAAAAAADAAkAAAAGAAEAAAAEAAgAAAAEAAIAAAAEAAkAAAAHAAEAAAAMAAgAAAAFAAIAAAAMAAkAAAAFAAMAAAAKAAgAAAAFAAIAAAAKAAkAAAAFAAMAAAA=")
 tile_set = ExtResource("ts_workshop_obj")
 
 [node name="Background" type="ColorRect" parent="."]
@@ -50,23 +52,21 @@ color = Color(0.9, 0.8, 0.7, 1)
 position = Vector2(202, 150)
 script = ExtResource("2_player_script")
 
-[node name="Sprite2D" type="ColorRect" parent="Player"]
-offset_left = -16.0
-offset_top = -16.0
-offset_right = 16.0
-offset_bottom = 16.0
-color = Color(0.2, 0.4, 0.8, 1)
-metadata/_edit_use_anchors_ = true
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
-shape = SubResource("RectangleShape2D_1")
-
-[node name="Camera2D" type="Camera2D" parent="Player"]
-
 [node name="InteractionArea" type="Area2D" parent="Player"]
 
 [node name="InteractionShape" type="CollisionShape2D" parent="Player/InteractionArea"]
 shape = SubResource("RectangleShape2D_1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="Sprite2D" type="Sprite2D" parent="Player"]
+texture_filter = 1
+scale = Vector2(2, 2)
+texture = ExtResource("char_player")
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+zoom = Vector2(2, 2)
 
 [node name="WorkstationNodes" type="Node2D" parent="."]
 
@@ -142,14 +142,6 @@ metadata/_edit_use_anchors_ = true
 position = Vector2(336, 144)
 script = ExtResource("3_master_script")
 
-[node name="MasterSprite" type="ColorRect" parent="MasterArtist"]
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
-color = Color(0.8, 0.6, 0.4, 1)
-metadata/_edit_use_anchors_ = true
-
 [node name="MasterCollision" type="CollisionShape2D" parent="MasterArtist"]
 shape = SubResource("RectangleShape2D_1")
 
@@ -157,6 +149,11 @@ shape = SubResource("RectangleShape2D_1")
 
 [node name="InteractionShape" type="CollisionShape2D" parent="MasterArtist/InteractionArea"]
 shape = SubResource("RectangleShape2D_1")
+
+[node name="MasterSprite" type="Sprite2D" parent="MasterArtist"]
+texture_filter = 1
+scale = Vector2(2, 2)
+texture = ExtResource("char_aldric")
 
 [node name="MainHUD" parent="." instance=ExtResource("7_main_hud")]
 visible = false
