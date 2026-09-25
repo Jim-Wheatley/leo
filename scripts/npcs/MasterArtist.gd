@@ -94,7 +94,19 @@ func _offer_fallback_guidance():
 	"""Shown when the AI is unavailable or returns invalid output."""
 	var guidance = get_guidance_based_on_skills()
 	var full_message = guidance
-	full_message += "\n\n(My thoughts are scattered today, apprentice. Return in a moment and I shall have a proper task for you.)"
+
+	# Coexist with the simulation layer: if Aldric has a recent autonomous
+	# remark, colour the guidance with it so the master feels like the same
+	# character the rest of the living world is reacting to. Task generation
+	# above is untouched — this only enriches the fallback dialogue.
+	var aldric = null
+	if has_node("/root/Sim"):
+		aldric = get_node("/root/Sim").get_agent("Master Aldric")
+	if aldric and aldric.last_response != "":
+		full_message += "\n\n" + ActionParser.strip_actions(aldric.last_response)
+	else:
+		full_message += "\n\n(My thoughts are scattered today, apprentice. Return in a moment and I shall have a proper task for you.)"
+
 	dialogue_system.show_simple_dialogue("Master Artist", full_message)
 
 func check_for_completed_tasks() -> Array:

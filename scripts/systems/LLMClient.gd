@@ -18,13 +18,31 @@ const TIMEOUT_SECONDS = 60.0
 
 var http_request: HTTPRequest
 
+## Shared across ALL LLMClient instances: only one request may be in flight to
+## the single local model at a time. Overlapping requests (e.g. the task
+## generator firing while a sim agent is thinking) corrupt each other's replies.
+static var _endpoint_busy: bool = false
+
 func _ready():
 	http_request = HTTPRequest.new()
 	http_request.timeout = TIMEOUT_SECONDS
 	add_child(http_request)
 
 ## Call the LLM with a list of messages. Returns a dict with ok, content, and error fields.
+##
+## Serialised on a shared lock so overlapping requests to the single local model
+## can't corrupt each other. Callers just await as usual; queued callers wait
+## their turn. _do_request always returns (HTTPRequest has a timeout), so the
+## lock is always released.
 func call_completions(messages: Array, max_tokens: int = 512) -> Dictionary:
+	while _endpoint_busy:
+		await get_tree().process_frame
+	_endpoint_busy = true
+	var result: Dictionary = await _do_request(messages, max_tokens)
+	_endpoint_busy = false
+	return result
+
+func _do_request(messages: Array, max_tokens: int) -> Dictionary:
 	var request_body = {
 		"model": "local-model",
 		"messages": messages,

@@ -36,6 +36,9 @@ func _ready():
 	# Show helpful message about starting materials
 	show_starting_materials_message()
 
+	# Hook up the AI simulation layer (see AI_SIMULATION_LAYER.md)
+	_setup_simulation()
+
 func setup_collision_layers():
 	"""Set up collision layers for proper interaction detection"""
 	# Set player to collision layer 1
@@ -286,6 +289,11 @@ func interact_with_master():
 	if master_artist.has_method("interact_with_player"):
 		# Use the new task system interaction
 		master_artist.interact_with_player()
+		# Record the interaction so the world reacts on the NEXT ambient tick.
+		# We deliberately do NOT run a tick here: the master's own task-generation
+		# already calls the LLM, and firing a second concurrent call to the local
+		# model corrupts and truncates both replies.
+		Sim.note_player_action("spoke with Master Aldric about the work")
 	else:
 		# Fallback to old system
 		var master_script = master_artist.get_script()
@@ -680,6 +688,105 @@ func show_starting_materials_message():
 func exit_to_florence():
 	"""Handle exiting the workshop to Florence"""
 	print("🚪 Leaving the workshop for Florence...")
-	
+
+	# Tell the simulation the player has left the workshop.
+	Sim.set_player_location("florence")
+
 	# Transition to Florence scene using scene file path
 	get_tree().change_scene_to_file("res://scenes/environments/Florence.tscn")
+
+
+# ==============================================================
+#  AI Simulation Layer hookup (see AI_SIMULATION_LAYER.md)
+# ==============================================================
+
+var _sim_timer: Timer = null
+
+func _setup_simulation():
+	"""Connect this scene to the running Sim autoload."""
+	# The player is in the workshop while this scene is active.
+	Sim.set_player_location("workshop")
+
+	# Surface what agents say and do.
+	if not Sim.agent_spoke.is_connected(_on_agent_spoke):
+		Sim.agent_spoke.connect(_on_agent_spoke)
+	if not Sim.agent_acted.is_connected(_on_agent_acted):
+		Sim.agent_acted.connect(_on_agent_acted)
+
+	# Periodic visitors (Casimir / Serafine).
+	if not Sim.visitor_arrived.is_connected(_on_sim_visitor_arrived):
+		Sim.visitor_arrived.connect(_on_sim_visitor_arrived)
+	if not Sim.visitor_left.is_connected(_on_sim_visitor_left):
+		Sim.visitor_left.connect(_on_sim_visitor_left)
+
+	# Mira's arrival beats.
+	if not Sim.mira_gossip_started.is_connected(_on_mira_gossip_started):
+		Sim.mira_gossip_started.connect(_on_mira_gossip_started)
+	if not Sim.mira_arrived.is_connected(_on_mira_arrived):
+		Sim.mira_arrived.connect(_on_mira_arrived)
+
+	# Feed observable player actions into the world.
+	if not TaskManager.task_completed.is_connected(_on_sim_task_completed):
+		TaskManager.task_completed.connect(_on_sim_task_completed)
+
+	# Ambient ticks so the world breathes even when the player is idle.
+	# A tick with active agents costs several seconds on a local model, so keep
+	# this interval generous.
+	_sim_timer = Timer.new()
+	_sim_timer.wait_time = 45.0
+	_sim_timer.autostart = true
+	add_child(_sim_timer)
+	_sim_timer.timeout.connect(_run_sim_tick)
+
+	print("✅ Workshop: AI simulation hooked up")
+
+func _run_sim_tick():
+	"""Advance the simulation one turn.
+
+	Guarded twice: ticks never overlap each other, AND a tick never runs while
+	the master is generating a task — both hit the single local LLM at once and
+	would truncate each other's replies.
+	"""
+	if Sim._is_ticking:
+		return
+	if master_artist and "_is_requesting_task" in master_artist and master_artist._is_requesting_task:
+		return
+	await Sim.run_tick()
+
+func _on_sim_task_completed(task):
+	"""Player finished a task — a strong world signal."""
+	Sim.note_player_action("completed the task '%s'" % task.title, "workshop")
+	Sim.world_state.bump_commission(10)
+	Sim.first_major_task_done = true
+
+func _on_agent_spoke(agent_name: String, dialogue: String):
+	"""Show agent dialogue: in the master's box if talking to him, else ambient."""
+	if agent_name == "Master Aldric" and current_interactable == master_artist:
+		master_artist.dialogue_system.show_simple_dialogue("Master Artist", dialogue)
+	elif main_hud:
+		main_hud.show_notification("%s: %s" % [agent_name, dialogue], 5.0, "info")
+
+func _on_agent_acted(agent_name: String, action: Dictionary):
+	"""Apply real game effects for structured agent actions (extend as needed)."""
+	match action.verb:
+		"work":
+			if action.target == "commission":
+				Sim.world_state.bump_commission(2)
+		_:
+			pass
+
+func _on_sim_visitor_arrived(agent_name: String):
+	if main_hud:
+		main_hud.show_notification("%s has arrived at the workshop." % agent_name, 5.0, "info")
+
+func _on_sim_visitor_left(agent_name: String):
+	if main_hud:
+		main_hud.show_notification("%s has left." % agent_name, 3.0, "info")
+
+func _on_mira_gossip_started():
+	if main_hud:
+		main_hud.show_notification("Word spreads of an unusual request from Lord Casimir...", 6.0, "info")
+
+func _on_mira_arrived():
+	if main_hud:
+		main_hud.show_notification("A new apprentice, Mira, has arrived at the workshop.", 6.0, "info")
